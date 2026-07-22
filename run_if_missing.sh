@@ -3,7 +3,10 @@
 # Used as a catch-up check by the launchd agent, in case the 8am cron job
 # was missed because the laptop was asleep.
 
-PROJECT_DIR="/Users/ghoe25/crypto_research_assistant"
+# $0 is "the path this script was run with" — cd-ing into its folder and
+# printing the full path (pwd) gives us the project location no matter
+# whose computer or username this runs under.
+PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 TODAY=$(date +%Y-%m-%d)
 REPORT_FILE="$PROJECT_DIR/reports/brief_${TODAY}.md"
 
