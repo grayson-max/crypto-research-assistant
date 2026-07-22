@@ -28,8 +28,9 @@ SYSTEM_PROMPT = (
 )
 
 
-def build_prompt(market_data: dict, headlines: list[dict]) -> str:
-    """Construct the LLM prompt from structured market data and tagged headlines."""
+def build_prompt(market_data: dict, headlines: list[dict], fear_greed: dict) -> str:
+    """Construct the LLM prompt from structured market data, tagged headlines,
+    and the current Fear & Greed reading."""
     lines = ["Market data (BTC/ETH/SOL):"]
     for symbol, data in market_data.items():
         if data is None:
@@ -38,8 +39,19 @@ def build_prompt(market_data: dict, headlines: list[dict]) -> str:
         lines.append(
             f"- {symbol}: ${data['price']:,.2f}, "
             f"24h change {data['change_24h']:+.2f}%, "
-            f"market cap ${data['market_cap']:,.0f}"
+            f"7d change {data['change_7d']:+.2f}%, "
+            f"30d change {data['change_30d']:+.2f}%, "
+            f"market cap ${data['market_cap']:,.0f} (rank #{data['market_cap_rank']}), "
+            f"24h volume ${data['volume_24h']:,.0f}, "
+            f"{data['ath_change_percentage']:+.1f}% from all-time high"
         )
+
+    lines.append(
+        f"\nCrypto Fear & Greed Index: {fear_greed['value']}/100 "
+        f"({fear_greed['classification']}) — a market-wide sentiment gauge, "
+        "not specific to BTC/ETH/SOL. Reference it briefly in the Market "
+        "Overview if it adds context, but don't over-index on it."
+    )
 
     lines.append("\nRecent headlines with sentiment tags:")
     for item in headlines:
@@ -54,10 +66,10 @@ def build_prompt(market_data: dict, headlines: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def generate_brief(market_data: dict, headlines: list[dict]) -> str:
+def generate_brief(market_data: dict, headlines: list[dict], fear_greed: dict) -> str:
     """Call the Anthropic API and return brief text with the disclaimer appended."""
     client = anthropic.Anthropic()
-    prompt = build_prompt(market_data, headlines)
+    prompt = build_prompt(market_data, headlines, fear_greed)
 
     response = client.messages.create(
         model=MODEL,

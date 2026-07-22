@@ -1,4 +1,6 @@
-"""Fetch price, 24h change, and market cap for BTC/ETH/SOL from CoinGecko."""
+"""Fetch price, 24h/7d/30d change, market cap, volume, supply, ATH, and a
+7-day sparkline for BTC/ETH/SOL. One CoinGecko /coins/markets call covers
+all of it."""
 
 import requests
 
@@ -8,33 +10,43 @@ COINS = {
     "SOL": "solana",
 }
 
-API_URL = "https://api.coingecko.com/api/v3/simple/price"
+API_URL = "https://api.coingecko.com/api/v3/coins/markets"
 
 
 def fetch_market_data() -> dict:
-    """Return {symbol: {price, change_24h, market_cap}} for BTC/ETH/SOL."""
+    """Return {symbol: {...}} with everything a stat tile needs, or
+    {symbol: None} if that coin wasn't in the response."""
     params = {
+        "vs_currency": "usd",
         "ids": ",".join(COINS.values()),
-        "vs_currencies": "usd",
-        "include_24hr_change": "true",
-        "include_market_cap": "true",
+        "price_change_percentage": "24h,7d,30d",
+        "sparkline": "true",
     }
 
     response = requests.get(API_URL, params=params, timeout=10)
     response.raise_for_status()
-    raw = response.json()
+    raw = {coin["id"]: coin for coin in response.json()}
 
     market_data = {}
     for symbol, coingecko_id in COINS.items():
-        coin_data = raw.get(coingecko_id)
-        if coin_data is None:
+        coin = raw.get(coingecko_id)
+        if coin is None:
             market_data[symbol] = None
             continue
 
         market_data[symbol] = {
-            "price": coin_data.get("usd"),
-            "change_24h": coin_data.get("usd_24h_change"),
-            "market_cap": coin_data.get("usd_market_cap"),
+            "price": coin.get("current_price"),
+            "change_24h": coin.get("price_change_percentage_24h_in_currency"),
+            "change_7d": coin.get("price_change_percentage_7d_in_currency"),
+            "change_30d": coin.get("price_change_percentage_30d_in_currency"),
+            "market_cap": coin.get("market_cap"),
+            "market_cap_rank": coin.get("market_cap_rank"),
+            "volume_24h": coin.get("total_volume"),
+            "circulating_supply": coin.get("circulating_supply"),
+            "max_supply": coin.get("max_supply"),
+            "ath": coin.get("ath"),
+            "ath_change_percentage": coin.get("ath_change_percentage"),
+            "sparkline_7d": (coin.get("sparkline_in_7d") or {}).get("price", []),
         }
 
     return market_data

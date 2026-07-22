@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 
 from fetch_market_data import fetch_market_data
 from fetch_headlines import fetch_headlines
+from fetch_fear_greed import fetch_fear_greed
+from fetch_dominance import fetch_dominance
 from sentiment import tag_headlines
 from generate_brief import generate_brief
 from deliver import deliver_to_icloud, notify_done
@@ -39,16 +41,22 @@ def run() -> None:
 
     market_data = fetch_market_data()
     headlines = tag_headlines(fetch_headlines())
-    brief = generate_brief(market_data, headlines)
+    fear_greed = fetch_fear_greed()
+    dominance = fetch_dominance()
+    brief = generate_brief(market_data, headlines, fear_greed)
 
-    stem = f"brief_{date.today().isoformat()}"
+    today = date.today()
+    stem = f"brief_{today.isoformat()}"
 
     REPORTS_DIR.mkdir(exist_ok=True)
     out_path = REPORTS_DIR / f"{stem}.md"
     out_path.write_text(brief)
     print(f"Saved brief to {out_path}")
 
-    icloud_path = deliver_to_icloud(brief, stem)
+    icloud_path = deliver_to_icloud(
+        brief, stem, market_data, dominance, fear_greed,
+        today.strftime("%A, %B %-d, %Y"),
+    )
     print(f"Delivered to {icloud_path}")
 
     notify_done(f"Synced to iCloud Drive: {icloud_path.name}")
