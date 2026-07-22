@@ -85,8 +85,8 @@ because the pipeline runs unattended via cron; a silent crash with no
 signal would mean a missed day going unnoticed.
 
 ### `deliver.py` — DONE
-Delivery mechanism, chosen over email after weighing options: renders the
-brief as styled HTML (same CSS as `view_brief.py`) and saves it into
+Delivery mechanism, chosen over email after weighing options: renders a
+full styled HTML report and saves it into
 `~/Library/Mobile Documents/com~apple~CloudDocs/CryptoBriefs/` — the local
 folder that iCloud Drive automatically syncs to all of the user's Apple
 devices. Chosen over email because it requires **zero account setup** for
@@ -95,6 +95,30 @@ into iCloud on their Mac, which is the default for virtually all Mac users.
 Also fires the native macOS notification (best-effort — some environments,
 like screen-sharing/Focus modes, suppress it; this is a known non-fatal
 platform quirk, not a pipeline bug).
+
+The report is a proper stat-sheet, not just rendered Markdown: a KPI row
+of one stat tile per coin (price, 24h/7d/30d change, market cap + rank +
+dominance %, 24h volume, circulating/max supply, distance from all-time
+high, a 7-day sparkline), a Fear & Greed Index gauge, then the AI-written
+narrative underneath. Colors follow the project's validated data-viz
+palette (see the `dataviz` skill) — a fixed green/red pair for every delta
+field, status-scale colors for the Fear & Greed gauge. An earlier version
+included a jargon glossary; dropped after feedback that the recipient is
+an industry professional, not a beginner.
+
+### `fetch_fear_greed.py` / `fetch_dominance.py` — DONE
+Two small free, no-key-required data sources layered on top of the
+original CoinGecko/NewsAPI pair: `alternative.me`'s Fear & Greed Index
+(market-wide sentiment, 0-100) and CoinGecko's `/global` endpoint (each
+coin's % share of total crypto market cap). Both feed the stat tiles;
+Fear & Greed is also passed into `generate_brief.py`'s prompt so the
+written narrative can reference it.
+
+**`fetch_market_data.py` was consolidated** to use CoinGecko's
+`/coins/markets` endpoint instead of `/simple/price` — one call now
+returns price, 24h/7d/30d change, market cap, rank, volume, supply, ATH,
+and a 7-day hourly sparkline, replacing what used to be two separate
+endpoints (a since-removed `fetch_price_history.py`).
 
 ## Supporting files
 
