@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+cron.log
+reports/*.html
+reports/*.md
