@@ -1,0 +1,27 @@
+{
+  "coins": {
+    "BTC": {
+      "coingecko_id": "bitcoin",
+      "dominance_symbol": "btc",
+      "name": "Bitcoin",
+      "news_query": "Bitcoin"
+    },
+    "ETH": {
+      "coingecko_id": "ethereum",
+      "dominance_symbol": "eth",
+      "name": "Ethereum",
+      "news_query": "Ethereum"
+    },
+    "SOL": {
+      "coingecko_id": "solana",
+      "dominance_symbol": "sol",
+      "name": "Solana",
+      "news_query": "Solana"
+    }
+  },
+  "schedule_time": "08:00",
+  "delivery": {
+    "method": "icloud",
+    "folder_name": "CryptoBriefs"
+  }
+}

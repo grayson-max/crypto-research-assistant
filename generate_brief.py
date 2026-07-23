@@ -44,7 +44,8 @@ SYSTEM_PROMPT = (
 def build_prompt(market_data: dict, headlines: list[dict], fear_greed: dict) -> str:
     """Construct the LLM prompt from structured market data, tagged headlines,
     and the current Fear & Greed reading."""
-    lines = ["Market data (BTC/ETH/SOL):"]
+    symbols = "/".join(market_data.keys())
+    lines = [f"Market data ({symbols}):"]
     for symbol, data in market_data.items():
         if data is None:
             lines.append(f"- {symbol}: no data available")
@@ -62,7 +63,7 @@ def build_prompt(market_data: dict, headlines: list[dict], fear_greed: dict) -> 
     lines.append(
         f"\nCrypto Fear & Greed Index: {fear_greed['value']}/100 "
         f"({fear_greed['classification']}) — a market-wide sentiment gauge, "
-        "not specific to BTC/ETH/SOL. Reference it briefly in the Market "
+        f"not specific to {symbols}. Reference it briefly in the Market "
         "Overview if it adds context, but don't over-index on it."
     )
 

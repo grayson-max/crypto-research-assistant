@@ -1,22 +1,15 @@
-"""Fetch recent BTC/ETH/SOL headlines from NewsAPI."""
+"""Fetch recent headlines for the configured coins from NewsAPI."""
 
 import os
 
 import requests
 from dotenv import load_dotenv
 
+from config import load_config
+
 load_dotenv()
 
 API_URL = "https://newsapi.org/v2/everything"
-
-# NewsAPI has no built-in coin tagging, so we search per-coin with terms
-# specific enough to avoid unrelated noise (plain "SOL" or "ETH" match too
-# many unrelated words/tickers).
-COIN_QUERIES = {
-    "BTC": "Bitcoin",
-    "ETH": "Ethereum",
-    "SOL": "Solana",
-}
 
 HEADLINES_PER_COIN = 5
 
@@ -24,9 +17,15 @@ HEADLINES_PER_COIN = 5
 def fetch_headlines() -> list[dict]:
     """Return a list of {coin, headline, source, published_at} dicts."""
     api_key = os.getenv("NEWSAPI_API_KEY")
+    # NewsAPI has no built-in coin tagging, so we search per-coin with terms
+    # specific enough to avoid unrelated noise (plain "SOL" or "ETH" match
+    # too many unrelated words/tickers) — see config.json's news_query.
+    coin_queries = {
+        symbol: data["news_query"] for symbol, data in load_config()["coins"].items()
+    }
     headlines = []
 
-    for coin, query in COIN_QUERIES.items():
+    for coin, query in coin_queries.items():
         params = {
             "q": query,
             "language": "en",

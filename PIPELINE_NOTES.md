@@ -143,9 +143,10 @@ endpoints (a since-removed `fetch_price_history.py`).
 Two mechanisms work together so the brief generates reliably even if the
 laptop is asleep at the scheduled time:
 
-- **cron job** (`crontab -l` to view) — runs `main.py` directly every day at
-  8:00 AM. Simple, but silently skipped if the Mac is asleep/off at 8am.
-- **launchd agent** (`~/Library/LaunchAgents/com.grayson.cryptoresearch.plist`)
+- **cron job** (`crontab -l` to view) — runs `main.py` directly at the time
+  set in `config.json`'s `schedule_time` (default 8:00 AM). Simple, but
+  silently skipped if the Mac is asleep/off at that time.
+- **launchd agent** (`~/Library/LaunchAgents/com.cryptoresearch.catchup.plist`)
   — runs `run_if_missing.sh` every 30 minutes, plus once whenever the agent
   loads (login/wake). The script checks whether today's report file already
   exists; if not, it runs the pipeline. This is the catch-up mechanism —
@@ -158,9 +159,13 @@ laptop is asleep at the scheduled time:
   session access on macOS — this is a known platform quirk, not a bug.
 - **Logs**: `~/crypto_research_assistant/cron.log` — check here first if a
   day's brief doesn't appear.
-- **To remove**: `crontab -e` (delete the line) and
-  `launchctl unload ~/Library/LaunchAgents/com.grayson.cryptoresearch.plist`
-  followed by deleting that plist file.
+- **To change the schedule or delivery folder**: `./configure.sh` — updates
+  `config.json` and re-applies the cron schedule without touching anything
+  else.
+- **To remove**: `./uninstall.sh` — removes the cron job and the launchd
+  agent automatically, then asks (one at a time) before removing `.venv`,
+  `.env`/`config.json`, or `reports/`. See `INSTALLER_GUIDE.md` for a full
+  plain-language walkthrough of install/configure/uninstall.
 
 ## Build order status
 

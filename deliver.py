@@ -16,9 +16,16 @@ from pathlib import Path
 
 import markdown
 
-ICLOUD_DIR = Path.home() / "Library/Mobile Documents/com~apple~CloudDocs/CryptoBriefs"
+from config import load_config
 
-COIN_NAMES = {"BTC": "Bitcoin", "ETH": "Ethereum", "SOL": "Solana"}
+_config = load_config()
+ICLOUD_DIR = (
+    Path.home()
+    / "Library/Mobile Documents/com~apple~CloudDocs"
+    / _config["delivery"]["folder_name"]
+)
+
+COIN_NAMES = {symbol: data["name"] for symbol, data in _config["coins"].items()}
 
 STYLE = """
 <style>

@@ -1,14 +1,10 @@
 """Fetch price, 24h/7d/30d change, market cap, volume, supply, ATH, and a
-7-day sparkline for BTC/ETH/SOL. One CoinGecko /coins/markets call covers
-all of it."""
+7-day sparkline for the configured coins. One CoinGecko /coins/markets call
+covers all of it."""
 
 import requests
 
-COINS = {
-    "BTC": "bitcoin",
-    "ETH": "ethereum",
-    "SOL": "solana",
-}
+from config import load_config
 
 API_URL = "https://api.coingecko.com/api/v3/coins/markets"
 
@@ -16,9 +12,12 @@ API_URL = "https://api.coingecko.com/api/v3/coins/markets"
 def fetch_market_data() -> dict:
     """Return {symbol: {...}} with everything a stat tile needs, or
     {symbol: None} if that coin wasn't in the response."""
+    coins = {
+        symbol: data["coingecko_id"] for symbol, data in load_config()["coins"].items()
+    }
     params = {
         "vs_currency": "usd",
-        "ids": ",".join(COINS.values()),
+        "ids": ",".join(coins.values()),
         "price_change_percentage": "24h,7d,30d",
         "sparkline": "true",
     }
@@ -28,7 +27,7 @@ def fetch_market_data() -> dict:
     raw = {coin["id"]: coin for coin in response.json()}
 
     market_data = {}
-    for symbol, coingecko_id in COINS.items():
+    for symbol, coingecko_id in coins.items():
         coin = raw.get(coingecko_id)
         if coin is None:
             market_data[symbol] = None
