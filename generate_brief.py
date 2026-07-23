@@ -23,8 +23,21 @@ SYSTEM_PROMPT = (
     "- Do not tell the reader what action to take.\n"
     "- Stick to describing what the data and headlines show, and note any "
     "notable sentiment shifts.\n"
-    "- Write 2-3 short paragraphs followed by a few bullet points highlighting "
-    "the most notable items per asset."
+    "- Do not include any disclaimer or compliance language — one is "
+    "appended automatically after your response.\n"
+    "- Write the Market Overview as short bullet points (not paragraphs) "
+    "covering price action, sentiment, and any notable regulatory/"
+    "infrastructure themes — a few bullets per topic, not dense prose.\n"
+    "- For each asset's Notable Items, lead with a single bold headline "
+    "figure line (price, 24h/30d change) followed by short bullet points "
+    "for each notable item.\n"
+    "- One fact or idea per bullet. Never join multiple facts in a single "
+    "bullet with semicolons or 'and' — split them into separate bullets "
+    "instead, so the reader can scan line by line without parsing dense "
+    "clauses.\n"
+    "- Use terse data-label format for stats, not full sentences — e.g. "
+    "'Market cap: $1.30T (#1 rank)' and 'Volume (24h): $24.5B', not "
+    "'Market cap of $1.30T holds the #1 rank.'\n"
 )
 
 
@@ -73,7 +86,7 @@ def generate_brief(market_data: dict, headlines: list[dict], fear_greed: dict) -
 
     response = client.messages.create(
         model=MODEL,
-        max_tokens=1024,
+        max_tokens=1536,
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": prompt}],
     )

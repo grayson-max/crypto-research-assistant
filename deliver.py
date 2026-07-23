@@ -10,6 +10,7 @@ validated palette (see the dataviz design skill): status tokens for the
 Fear & Greed gauge, a fixed up/down pair for every delta field, muted gray
 for de-emphasized chart ink."""
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -91,7 +92,7 @@ STYLE = """
   .prose strong { color: var(--text-primary); }
   hr { border: none; border-top: 1px solid var(--gridline); margin: 24px 0; }
 
-  .disclaimer { color: var(--text-secondary); font-size: 0.8rem; margin-top: 24px; }
+  .disclaimer { color: var(--muted); font-size: 0.7rem; font-style: italic; margin-top: 24px; }
 </style>
 """
 
@@ -217,16 +218,29 @@ def render_html(
         if data is not None
     )
 
-    prose_html = markdown.markdown(brief_md)
+    # The page already has its own <h1> above; drop the brief's own
+    # "# Daily Crypto Market Brief" heading so it doesn't repeat below.
+    body_md = re.sub(r"^#\s+.*\n+", "", brief_md, count=1)
+
+    # Pull the trailing compliance disclaimer out of the prose so it can be
+    # rendered smaller/italic instead of as a bolded paragraph.
+    disclaimer_match = re.search(r"\n+---\n\*\*(.+?)\*\*\s*$", body_md, re.DOTALL)
+    disclaimer_html = ""
+    if disclaimer_match:
+        body_md = body_md[: disclaimer_match.start()]
+        disclaimer_html = f'<p class="disclaimer">{disclaimer_match.group(1)}</p>'
+
+    prose_html = markdown.markdown(body_md)
 
     return f"""<html><head><meta charset="utf-8">{STYLE}</head><body>
       <h1>Daily Crypto Research Brief</h1>
-      <p class="subtitle">{report_date} &middot; Internal research support only</p>
+      <p class="subtitle">{report_date}</p>
 
       <div class="kpi-row">{tiles}</div>
       {_fear_greed_gauge(fear_greed)}
 
       <div class="prose">{prose_html}</div>
+      {disclaimer_html}
     </body></html>"""
 
 
