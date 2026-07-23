@@ -90,7 +90,7 @@ STYLE = """
   .prose { margin-top: 8px; }
   .prose p { margin: 10px 0; }
   .prose strong { color: var(--text-primary); }
-  hr { border: none; border-top: 1px solid var(--gridline); margin: 24px 0; }
+  hr { border: none; margin: 24px 0; }
 
   .disclaimer { color: var(--muted); font-size: 0.7rem; font-style: italic; margin-top: 24px; }
 </style>
