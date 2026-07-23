@@ -6,9 +6,16 @@ do each step in order, in the order it's written. It should take about
 
 This only works on a **Mac**.
 
+**Contents**
+1. Setting it up
+2. Changing settings later — schedule time, delivery folder
+3. Changing what's in the brief — new data, charts, wording
+4. Taking it off your computer
+5. Common problems and how to fix them
+
 ---
 
-# Part 1: Setting It Up
+# 1. Setting It Up
 
 ## Step 1: Open Terminal
 
@@ -103,18 +110,129 @@ from inside the project folder:
 .venv/bin/python3 main.py
 ```
 
-## Changing your settings later
+---
 
-If you want to change what time it runs, or the delivery folder name,
-type:
-```
-./configure.sh
-```
-and answer the same style of questions again.
+# 2. Changing Settings Later
+
+If you ever want to change what time the brief runs, or the iCloud
+Drive folder it's delivered to, you don't need to reinstall anything.
+
+## Step 1: Open Terminal and go to the project folder
+
+1. Open Terminal the same way as in 1, Step 1.
+2. Type this and press Enter:
+   ```
+   cd crypto_research_assistant
+   ```
+
+## Step 2: Run the settings tool
+
+1. Type this and press Enter:
+   ```
+   ./configure.sh
+   ```
+2. It first shows you what's currently set, for example:
+   ```
+   Current settings:
+     Coins tracked: BTC, ETH, SOL
+     Schedule time: 08:00
+     Delivery folder (iCloud Drive): CryptoBriefs
+   ```
+3. It then asks for a new schedule time, showing the current one in
+   brackets:
+   ```
+   New schedule time [08:00]:
+   ```
+   - To **change it**: type the new time in 24-hour format (e.g. `17:30`
+     for 5:30 PM) and press Enter.
+   - To **keep it the same**: just press Enter without typing anything.
+4. It asks the same way for a new delivery folder name — type a new
+   name, or press Enter to keep the current one.
+5. It saves your answers and reschedules the daily run automatically.
+   You'll see a confirmation like:
+   ```
+   Done. Briefs will now be delivered to iCloud Drive > CryptoBriefs at 17:30 daily.
+   ```
+
+That's it — nothing else needs restarting, and your saved keys and past
+briefs are untouched.
+
+**Example:** to move the daily brief from 8:00 AM to 5:30 PM, run
+`./configure.sh`, type `17:30` when asked for the new schedule time,
+then press Enter at the folder prompt to leave it as-is.
+
+(Changing which coins are tracked isn't a guided prompt yet — that
+means editing a settings file directly, which is more technical. Ask
+whoever set this up for you if you need that changed.)
 
 ---
 
-# Part 2: Taking It Off Your Computer
+# 3. Changing What's in the Brief
+
+Everything above covers running the brief as it already is. If you want
+it to actually say or show something different — track one more data
+point, add a small chart, shorten a section — that's not a settings
+toggle like 2. It's a small code change, and the easiest way to
+make one without learning to code yourself is to ask an AI assistant
+called **Claude Code** to make it for you, in plain English.
+
+## Step 1: What Claude Code actually is
+
+Think of it like texting a request to someone who can read and edit
+this project's code — except instead of a person, it's Claude (the same
+AI that writes the brief itself), and instead of texting, you type in
+Terminal. You describe what you want changed in plain English; it makes
+the change and tells you what it did.
+
+## Step 2: Install it (one time)
+
+1. Go to **claude.com/claude-code** in your browser and follow the
+   install instructions there for your Mac.
+2. You'll need your own Claude account to use it — this is separate
+   from the Anthropic key you set up in 1, Step 2. That key only
+   lets the pipeline *silently* call Claude in the background; using
+   Claude Code is *you* directly chatting with it, which is a different
+   kind of access.
+
+## Step 3: Open it inside this project
+
+1. Open Terminal and go to the project folder, same as always:
+   ```
+   cd crypto_research_assistant
+   ```
+2. Type:
+   ```
+   claude
+   ```
+3. Wait for it to start up — you'll see a prompt where you can type a
+   message.
+
+## Step 4: Ask for the change, in plain English
+
+Just describe what you want. Some examples:
+- *"Add a data point showing each coin's 7-day trading volume trend."*
+- *"Add a small chart showing Bitcoin's price over the last 7 days."*
+- *"Make the headlines section shorter — 2 items per coin instead of 4."*
+
+It may ask a clarifying question or show you what it's about to change
+before doing it — that's normal, just answer or confirm.
+
+## Step 5: See the result
+
+Ask it directly: *"Regenerate today's brief so I can see the change."*
+It'll run the pipeline and you can check the result the same way as
+always — in `reports/` or the delivered copy in iCloud Drive.
+
+## If you don't like the result
+
+Just say so — *"undo that last change"* works, because this project
+folder is tracked with a tool called **git** that remembers every past
+version, like a safety net. Nothing you ask for here is permanent or
+risky to try.
+
+---
+
+# 4. Taking It Off Your Computer
 
 If you ever want to stop this — for any reason, no explanation needed —
 here's how, and it's built to be careful about not deleting things you
@@ -160,9 +278,77 @@ folder.
 
 ---
 
-## If something goes wrong
+# 5. Common Problems and How to Fix Them
 
 Nothing here can damage your computer — worst case, a brief doesn't get
-generated one day. If a step doesn't work the way this describes, copy
-the exact text Terminal showed you and send it to whoever gave you this
-project.
+generated one day. Here are the issues most likely to come up, and
+exactly what to do about each one.
+
+### "Permission denied" when running `./install.sh` (or any `./` command)
+
+This means the file isn't marked as "runnable" yet. Fix it once with:
+```
+chmod +x install.sh configure.sh uninstall.sh
+```
+Then try the original command again.
+
+### macOS pops up asking for permission to access files/folders
+
+The first time these scripts touch iCloud Drive or your saved settings,
+macOS may ask something like *"Terminal" wants access to files in your
+Documents folder*. Click **OK** or **Allow** — this is expected and
+required for briefs to be delivered.
+
+If you accidentally clicked **Don't Allow** and things stopped working:
+go to  **System Settings → Privacy & Security → Files and Folders**
+(on some macOS versions: **Full Disk Access**), find **Terminal** in
+the list, and turn it on.
+
+### During install, it says a key "failed to validate"
+
+- **Anthropic key failed**: usually means either the key was copied
+  wrong (go back to console.anthropic.com and copy it again, carefully
+  — no extra spaces), or a payment method hasn't been added yet on that
+  site (Anthropic's key won't work until billing is set up, even though
+  the cost itself is small).
+- **NewsAPI key failed**: almost always a copy/paste typo — go back to
+  your NewsAPI account page and copy it again.
+
+After fixing it, just run `./install.sh` again — it's safe to re-run
+and won't duplicate anything already set up.
+
+### No brief showed up today
+
+Check these in order:
+
+1. **Was your Mac asleep or off around the scheduled time (and for the
+   30 minutes after)?** If so, it'll catch up automatically the next
+   time your Mac is awake — no action needed.
+2. **Look at the log file for an error message.** In Finder, open the
+   `crypto_research_assistant` folder, find the file named `cron.log`,
+   and double-click it to open it in TextEdit. Scroll to the very
+   bottom (the most recent entry) and look for:
+   - **Anything mentioning "timeout" or "connection"** → the internet
+     was briefly down when it tried to run. Safe to ignore — it'll
+     succeed the next scheduled run, or you can generate one manually
+     (see "Want a brief right now instead of waiting?" in 1).
+   - **Anything mentioning "401" or "authentication" near "anthropic"**
+     → your Anthropic key has expired or its billing lapsed. Check
+     console.anthropic.com, fix it there, then generate a brief
+     manually to confirm it's working again.
+   - **"Missing required API key(s)"** → your `.env` file is missing or
+     got moved/deleted. Run `./install.sh` again to re-enter your keys.
+3. **Check iCloud Drive is turned on.** Go to **System Settings → your
+   name at the top → iCloud → iCloud Drive** and make sure it's
+   switched on. Without it, briefs still generate and save on this
+   Mac, but won't sync to your phone or other devices.
+
+### It's generating briefs, but they're not showing up on my phone/other devices
+
+That's almost always the iCloud Drive check above (#3) — the brief is
+being created fine, it just isn't syncing anywhere else yet.
+
+### None of the above matches what you're seeing
+
+Copy the exact text Terminal (or `cron.log`) showed you and send it to
+whoever gave you this project.

@@ -39,6 +39,39 @@ generation step (see `generate_brief.py`'s `SYSTEM_PROMPT` for the same
 rules applied there) — a question asked in chat should get an answer
 held to the same standard as the written brief.
 
+## Changing what's in the brief
+
+The user may ask in plain English for a change to the brief's content
+or appearance — e.g. "add a new data point," "show a chart of BTC's
+price this month," "make the headlines section shorter." These are code
+changes, not config options — go to the file that owns that concern
+rather than guessing:
+
+- **`deliver.py`** — the styled HTML report: KPI stat tiles, the
+  Fear & Greed gauge, colors/layout/spacing, and anything about how the
+  brief *looks* (including adding a new chart — see `_sparkline_svg` for
+  the existing pattern of a small inline SVG chart with no external
+  library).
+- **`generate_brief.py`** — what the brief *says*: the `SYSTEM_PROMPT`
+  controls tone/structure/compliance rules, and `build_prompt` controls
+  what data gets handed to Claude to write about. A request to track a
+  new data point (e.g. trading volume trend, a new coin) usually starts
+  in `fetch_market_data.py` (fetch it) and flows through here (mention
+  it in the prompt) and `deliver.py` (display it).
+- **`fetch_market_data.py` / `fetch_dominance.py` / `fetch_headlines.py`
+  / `fetch_fear_greed.py`** — where to add a genuinely new upstream data
+  source, if the request needs something none of these already fetch.
+
+After making a change, regenerate a brief to verify it end-to-end rather
+than just reading the diff:
+```
+.venv/bin/python3 main.py
+```
+then check both `reports/brief_<today>.md` and the delivered HTML in
+iCloud Drive (path from `config.json`'s `delivery.folder_name`) — the
+HTML is the styled version and often the one place layout/chart changes
+are actually visible.
+
 ## Automation and troubleshooting
 
 - `cron.log` — check here first if a day's brief seems to be missing.

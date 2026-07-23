@@ -60,7 +60,7 @@
   main {
     max-width: 680px;
     margin: 0 auto;
-    padding: 48px 24px 96px;
+    padding: 56px clamp(24px, 6vw, 64px) 96px;
   }
 
   header.masthead {
@@ -90,28 +90,66 @@
   }
   .lede strong { color: var(--ink); }
 
+  .toc {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .toc li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 0.92rem;
+  }
+  .toc a {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .toc a:hover, .toc a:focus-visible { color: var(--accent); }
+  .toc .toc-num {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    color: var(--accent);
+    min-width: 1.1em;
+  }
+  .toc .toc-desc { color: var(--ink-soft); }
+
   .part {
     margin-top: 56px;
   }
   .part-head {
     display: flex;
-    align-items: baseline;
-    gap: 12px;
+    align-items: center;
+    gap: 14px;
     border-bottom: 1px solid var(--border);
     padding-bottom: 14px;
     margin-bottom: 28px;
   }
   .part-eyebrow {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 0.78rem;
+    font-family: ui-serif, Georgia, serif;
+    font-weight: 600;
+    font-size: 1.1rem;
     color: var(--surface);
     background: var(--accent);
-    padding: 3px 9px;
-    border-radius: 4px;
-    letter-spacing: 0.03em;
-    white-space: nowrap;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
   }
+  .part.settings .part-eyebrow { background: var(--accent); opacity: 0.8; }
   .part.removal .part-eyebrow { background: var(--ink-soft); }
+  .part.troubleshooting .part-eyebrow { background: var(--amber); }
+  .part.customize .part-eyebrow { background: var(--accent); }
   .part-head h2 {
     font-family: ui-serif, Georgia, serif;
     font-size: 1.4rem;
@@ -122,6 +160,7 @@
     color: var(--ink-soft);
     font-size: 0.95rem;
     margin: -18px 0 26px;
+    max-width: 62ch;
   }
 
   .step {
@@ -149,7 +188,7 @@
     font-weight: 600;
     margin: 6px 0 8px;
   }
-  .step-body p { margin: 0 0 10px; }
+  .step-body p { margin: 0 0 10px; max-width: 62ch; }
   .step-body ol, .step-body ul {
     margin: 0 0 10px;
     padding-left: 1.25em;
@@ -230,6 +269,24 @@
   .whathappens ul { margin: 0; padding-left: 1.2em; }
   .whathappens li { margin-bottom: 6px; }
 
+  .issue {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .issue h3 {
+    font-size: 1.02rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .issue p { margin: 0 0 8px; max-width: 62ch; }
+  .issue p:last-child { margin-bottom: 0; }
+  .issue ul, .issue ol { margin: 8px 0; padding-left: 1.2em; }
+  .issue li { margin-bottom: 6px; }
+
   footer {
     margin-top: 56px;
     padding-top: 20px;
@@ -251,11 +308,18 @@
     <p class="kicker">Crypto Research Brief · Setup Guide</p>
     <h1>Setting this up (and taking it off your computer)</h1>
     <p class="lede">You don't need to know anything about coding or AI to follow this. Do each step in order — it takes about <strong>10 minutes</strong>. This only works on a <strong>Mac</strong>.</p>
+    <ul class="toc">
+      <li><span class="toc-num">1</span> <a href="#setup">Setting it up</a> <span class="toc-desc">— first-time install</span></li>
+      <li><span class="toc-num">2</span> <a href="#settings">Changing settings later</a> <span class="toc-desc">— schedule time, delivery folder</span></li>
+      <li><span class="toc-num">3</span> <a href="#customize">Changing what's in the brief</a> <span class="toc-desc">— new data, charts, wording</span></li>
+      <li><span class="toc-num">4</span> <a href="#removal">Taking it off your computer</a> <span class="toc-desc">— safe, asks before deleting anything</span></li>
+      <li><span class="toc-num">5</span> <a href="#troubleshooting">Common problems and fixes</a> <span class="toc-desc">— what to check, in order</span></li>
+    </ul>
   </header>
 
-  <section class="part install">
+  <section class="part install" id="setup">
     <div class="part-head">
-      <span class="part-eyebrow">Part 1</span>
+      <span class="part-eyebrow">1</span>
       <h2>Setting it up</h2>
     </div>
 
@@ -349,19 +413,138 @@
           <div class="term-line"><span class="prompt">$ </span>.venv/bin/python3 main.py</div>
         </div>
       </div>
-      <p style="margin-top:4px">To change what time it runs or the delivery folder name later:</p>
-      <div class="term">
-        <div class="term-bar"><span></span><span></span><span></span></div>
-        <div class="term-body">
-          <div class="term-line"><span class="prompt">$ </span>./configure.sh</div>
-        </div>
-      </div>
+      <p style="margin-top:12px">Want to change the schedule or delivery folder later? See 2 below.</p>
     </div>
   </section>
 
-  <section class="part removal">
+  <section class="part settings" id="settings">
     <div class="part-head">
-      <span class="part-eyebrow">Part 2</span>
+      <span class="part-eyebrow">2</span>
+      <h2>Changing settings later</h2>
+    </div>
+    <p class="part-note">Want to change what time the brief runs, or the iCloud Drive folder it's delivered to? You don't need to reinstall anything.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Open Terminal and go to the project folder</h3>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Run the settings tool</h3>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line"><span class="prompt">$ </span>./configure.sh</div>
+          </div>
+        </div>
+        <p>It first shows what's currently set:</p>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line">Current settings:</div>
+            <div class="term-line">  Coins tracked: BTC, ETH, SOL</div>
+            <div class="term-line">  Schedule time: 08:00</div>
+            <div class="term-line">  Delivery folder (iCloud Drive): CryptoBriefs</div>
+          </div>
+        </div>
+        <p>Then it asks two questions, each showing the current value in brackets:</p>
+        <ul>
+          <li><strong>New schedule time:</strong> type a new time in 24-hour format (e.g. <code class="inline">17:30</code> for 5:30 PM) and press <kbd>Enter</kbd> — or just press <kbd>Enter</kbd> alone to leave it unchanged.</li>
+          <li><strong>New delivery folder name:</strong> same idea — type a new name, or press <kbd>Enter</kbd> to keep the current one.</li>
+        </ul>
+        <p>It saves your answers and reschedules the daily run automatically — nothing else needs restarting, and your saved keys and past briefs are untouched.</p>
+      </div>
+    </div>
+
+    <div class="whathappens">
+      <h3>Example</h3>
+      <p>To move the daily brief from 8:00 AM to 5:30 PM: run <code class="inline">./configure.sh</code>, type <code class="inline">17:30</code> at the schedule prompt, then press <kbd>Enter</kbd> at the folder prompt to leave it as-is.</p>
+      <p style="margin-top:10px">Changing which coins are tracked isn't a guided prompt yet — that means editing a settings file directly, which is more technical. Ask whoever set this up for you if you need that changed.</p>
+    </div>
+  </section>
+
+  <section class="part customize" id="customize">
+    <div class="part-head">
+      <span class="part-eyebrow">3</span>
+      <h2>Changing what's in the brief</h2>
+    </div>
+    <p class="part-note">Everything above covers running the brief as it already is. If you want it to actually say or show something different — track one more data point, add a small chart, shorten a section — that's not a settings toggle like 2. It's a small code change, and the easiest way to make one without learning to code yourself is to ask an AI assistant called <strong>Claude Code</strong> to make it for you, in plain English.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>What Claude Code actually is</h3>
+        <p>Think of it like texting a request to someone who can read and edit this project's code — except instead of a person, it's Claude (the same AI that writes the brief itself), and instead of texting, you type in Terminal. You describe what you want changed in plain English; it makes the change and tells you what it did.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Install it (one time)</h3>
+        <ol>
+          <li>Go to <code class="inline">claude.com/claude-code</code> in your browser and follow the install instructions there for your Mac.</li>
+          <li>You'll need your own Claude account to use it — separate from the Anthropic key from 1, Step 2. That key only lets the pipeline <em>silently</em> call Claude in the background; using Claude Code is <em>you</em> directly chatting with it, a different kind of access.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Open it inside this project</h3>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
+            <div class="term-line"><span class="prompt">$ </span>claude</div>
+          </div>
+        </div>
+        <p>Wait for it to start up — you'll see a prompt where you can type a message.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Ask for the change, in plain English</h3>
+        <p>Just describe what you want. Some examples:</p>
+        <ul>
+          <li><em>"Add a data point showing each coin's 7-day trading volume trend."</em></li>
+          <li><em>"Add a small chart showing Bitcoin's price over the last 7 days."</em></li>
+          <li><em>"Make the headlines section shorter — 2 items per coin instead of 4."</em></li>
+        </ul>
+        <p>It may ask a clarifying question or show you what it's about to change before doing it — that's normal, just answer or confirm.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <h3>See the result</h3>
+        <p>Ask it directly: <em>"Regenerate today's brief so I can see the change."</em> It'll run the pipeline, and you can check the result the same way as always — in <code class="inline">reports/</code> or the delivered copy in iCloud Drive.</p>
+      </div>
+    </div>
+
+    <div class="whathappens">
+      <h3>If you don't like the result</h3>
+      <p>Just say so — <em>"undo that last change"</em> works, because this project folder is tracked with a tool called <strong>git</strong> that remembers every past version, like a safety net. Nothing you ask for here is permanent or risky to try.</p>
+    </div>
+  </section>
+
+  <section class="part removal" id="removal">
+    <div class="part-head">
+      <span class="part-eyebrow">4</span>
       <h2>Taking it off your computer</h2>
     </div>
     <p class="part-note">If you ever want to stop this — for any reason, no explanation needed — here's how. It's built to be careful about not deleting things you might want to keep.</p>
@@ -407,8 +590,66 @@
     </div>
   </section>
 
-  <footer>
-    <strong>If something goes wrong:</strong> nothing here can damage your computer — worst case, a brief doesn't get generated one day. Copy the exact text Terminal showed you and send it to whoever gave you this project.
-  </footer>
+  <section class="part troubleshooting" id="troubleshooting">
+    <div class="part-head">
+      <span class="part-eyebrow">5</span>
+      <h2>Common problems and how to fix them</h2>
+    </div>
+    <p class="part-note">Nothing here can damage your computer — worst case, a brief doesn't get generated one day. Here's what's most likely to come up, and exactly what to do.</p>
+
+    <div class="issue">
+      <h3>"Permission denied" when running <code class="inline">./install.sh</code> (or any <code class="inline">./</code> command)</h3>
+      <p>This means the file isn't marked as "runnable" yet. Fix it once with:</p>
+      <div class="term">
+        <div class="term-bar"><span></span><span></span><span></span></div>
+        <div class="term-body">
+          <div class="term-line"><span class="prompt">$ </span>chmod +x install.sh configure.sh uninstall.sh</div>
+        </div>
+      </div>
+      <p>Then try the original command again.</p>
+    </div>
+
+    <div class="issue">
+      <h3>macOS pops up asking for permission to access files/folders</h3>
+      <p>The first time these scripts touch iCloud Drive or your saved settings, macOS may ask something like <em>"Terminal" wants access to files in your Documents folder</em>. Click <strong>OK</strong> or <strong>Allow</strong> — this is expected and required for briefs to be delivered.</p>
+      <p>If you accidentally clicked <strong>Don't Allow</strong> and things stopped working: go to <strong>System Settings → Privacy &amp; Security → Files and Folders</strong> (on some macOS versions: <strong>Full Disk Access</strong>), find <strong>Terminal</strong> in the list, and turn it on.</p>
+    </div>
+
+    <div class="issue">
+      <h3>During install, it says a key "failed to validate"</h3>
+      <ul>
+        <li><strong>Anthropic key failed:</strong> usually a copy/paste typo (go back to console.anthropic.com and copy it again, carefully — no extra spaces), or a payment method hasn't been added yet on that site — the key won't work until billing is set up, even though the actual cost is small.</li>
+        <li><strong>NewsAPI key failed:</strong> almost always a typo — go back to your NewsAPI account page and copy it again.</li>
+      </ul>
+      <p>After fixing it, run <code class="inline">./install.sh</code> again — it's safe to re-run and won't duplicate anything already set up.</p>
+    </div>
+
+    <div class="issue">
+      <h3>No brief showed up today</h3>
+      <p>Check these in order:</p>
+      <ol>
+        <li><strong>Was your Mac asleep or off</strong> around the scheduled time (and for the 30 minutes after)? If so, it catches up automatically next time your Mac is awake — no action needed.</li>
+        <li><strong>Look at the log file for an error.</strong> In Finder, open the <code class="inline">crypto_research_assistant</code> folder, find <code class="inline">cron.log</code>, and double-click to open it in TextEdit. Scroll to the bottom (most recent entry) and look for:
+          <ul>
+            <li><em>"timeout" or "connection"</em> → the internet was briefly down. Safe to ignore — it'll succeed next run, or generate one manually (see 1).</li>
+            <li><em>"401" or "authentication" near "anthropic"</em> → your Anthropic key expired or billing lapsed. Fix it at console.anthropic.com, then generate a brief manually to confirm.</li>
+            <li><em>"Missing required API key(s)"</em> → your saved keys file is missing or got moved. Run <code class="inline">./install.sh</code> again to re-enter them.</li>
+          </ul>
+        </li>
+        <li><strong>Check iCloud Drive is turned on:</strong> <strong>System Settings → your name at the top → iCloud → iCloud Drive.</strong> Without it, briefs still generate and save on this Mac, they just won't sync to your phone or other devices.</li>
+      </ol>
+    </div>
+
+    <div class="issue">
+      <h3>It's generating briefs, but they're not showing up on my phone/other devices</h3>
+      <p>That's almost always the iCloud Drive check above — the brief is being created fine, it just isn't syncing anywhere else yet.</p>
+    </div>
+
+    <div class="issue">
+      <h3>None of the above matches what you're seeing</h3>
+      <p>Copy the exact text Terminal (or <code class="inline">cron.log</code>) showed you and send it to whoever gave you this project.</p>
+    </div>
+  </section>
+
 
 </main>
