@@ -46,19 +46,22 @@ these from two websites.
 
 ## Step 3: Get the project onto your computer
 
-If someone sent you a link to this project (a "repository," or "repo"),
-you'll download it with a single command.
+You should have received a file called **`crypto_research_assistant.zip`**
+(by AirDrop, email, or a file-sharing link).
 
-1. In Terminal, type this and press Enter (replace the link with the
-   one you were given):
-   ```
-   git clone <the link you were given>
-   ```
-2. Then type this and press Enter, to move into the folder that just
-   got created:
+1. Find it in your **Downloads** folder (or wherever it landed) and
+   double-click it. It'll unzip into a regular folder named
+   `crypto_research_assistant`.
+2. Move that folder somewhere you'll remember — your **Home** folder
+   (the one with the little house icon in Finder) is a good default.
+3. Back in Terminal, type this and press Enter, to move into that folder:
    ```
    cd crypto_research_assistant
    ```
+   If Terminal says "No such file or directory," you likely moved the
+   folder somewhere else — type `cd ` (with a trailing space, no Enter
+   yet), then drag the folder from Finder into the Terminal window,
+   which fills in the correct path for you, then press Enter.
 
 If Terminal shows an error about "git" not being found, a small popup
 will offer to install it for you — click **Install**, wait for it to
