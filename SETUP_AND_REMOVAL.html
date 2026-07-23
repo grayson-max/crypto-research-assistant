@@ -1,0 +1,414 @@
+<title>Setup &amp; Removal — Crypto Research Brief</title>
+<style>
+  :root {
+    --page: #F6F7F9;
+    --surface: #FFFFFF;
+    --surface-sunken: #F0F2F5;
+    --ink: #161A21;
+    --ink-soft: #5B6472;
+    --border: #E2E6EB;
+    --accent: #2C4A6E;
+    --accent-soft: #EAF0F6;
+    --amber: #C97B2E;
+    --amber-soft: #FBF1E6;
+    --term-bg: #1B1E23;
+    --term-text: #CFE8DC;
+    --term-prompt: #7C8794;
+    --red-dot: #EC6A5E;
+    --yellow-dot: #F4BF4F;
+    --green-dot: #61C554;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #14171C;
+      --surface: #1B1F26;
+      --surface-sunken: #21252D;
+      --ink: #E9EBEF;
+      --ink-soft: #9AA3B0;
+      --border: #2C313A;
+      --accent: #7FA6D1;
+      --accent-soft: #223245;
+      --amber: #E0A24F;
+      --amber-soft: #322616;
+      --term-bg: #0E1013;
+      --term-text: #B9E6CF;
+      --term-prompt: #6B7684;
+    }
+  }
+  :root[data-theme="dark"] {
+    --page: #14171C; --surface: #1B1F26; --surface-sunken: #21252D;
+    --ink: #E9EBEF; --ink-soft: #9AA3B0; --border: #2C313A;
+    --accent: #7FA6D1; --accent-soft: #223245; --amber: #E0A24F; --amber-soft: #322616;
+    --term-bg: #0E1013; --term-text: #B9E6CF; --term-prompt: #6B7684;
+  }
+  :root[data-theme="light"] {
+    --page: #F6F7F9; --surface: #FFFFFF; --surface-sunken: #F0F2F5;
+    --ink: #161A21; --ink-soft: #5B6472; --border: #E2E6EB;
+    --accent: #2C4A6E; --accent-soft: #EAF0F6; --amber: #C97B2E; --amber-soft: #FBF1E6;
+    --term-bg: #1B1E23; --term-text: #CFE8DC; --term-prompt: #7C8794;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  header.masthead {
+    margin-bottom: 40px;
+  }
+  .kicker {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  h1 {
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.15;
+    text-wrap: balance;
+    margin: 0 0 12px;
+  }
+  .lede {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    max-width: 52ch;
+    margin: 0;
+  }
+  .lede strong { color: var(--ink); }
+
+  .part {
+    margin-top: 56px;
+  }
+  .part-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    margin-bottom: 28px;
+  }
+  .part-eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.78rem;
+    color: var(--surface);
+    background: var(--accent);
+    padding: 3px 9px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+  .part.removal .part-eyebrow { background: var(--ink-soft); }
+  .part-head h2 {
+    font-family: ui-serif, Georgia, serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  .part-note {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    margin: -18px 0 26px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: ui-serif, Georgia, serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .step-body h3 {
+    font-size: 1.08rem;
+    font-weight: 600;
+    margin: 6px 0 8px;
+  }
+  .step-body p { margin: 0 0 10px; }
+  .step-body ol, .step-body ul {
+    margin: 0 0 10px;
+    padding-left: 1.25em;
+  }
+  .step-body li { margin-bottom: 6px; }
+  .step-body li::marker { color: var(--ink-soft); }
+
+  kbd {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: var(--surface-sunken);
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 1px 6px;
+    font-size: 0.85em;
+  }
+  code.inline {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    background: var(--surface-sunken);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-size: 0.9em;
+  }
+
+  .term {
+    background: var(--term-bg);
+    border-radius: 9px;
+    overflow: hidden;
+    margin: 12px 0 14px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .term-bar {
+    display: flex;
+    gap: 6px;
+    padding: 9px 12px;
+    background: rgba(255,255,255,0.04);
+  }
+  .term-bar span {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .term-bar span:nth-child(1) { background: var(--red-dot); }
+  .term-bar span:nth-child(2) { background: var(--yellow-dot); }
+  .term-bar span:nth-child(3) { background: var(--green-dot); }
+  .term-body {
+    padding: 4px 16px 16px;
+    overflow-x: auto;
+  }
+  .term-line {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.88rem;
+    color: var(--term-text);
+    white-space: pre;
+  }
+  .term-line .prompt { color: var(--term-prompt); }
+
+  .callout {
+    border-left: 3px solid var(--amber);
+    background: var(--amber-soft);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    margin: 12px 0 16px;
+    font-size: 0.95rem;
+  }
+  .callout strong { color: var(--amber); }
+
+  .whathappens {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-top: 8px;
+  }
+  .whathappens h3 {
+    font-family: ui-serif, Georgia, serif;
+    font-size: 1.1rem;
+    margin: 0 0 12px;
+  }
+  .whathappens ul { margin: 0; padding-left: 1.2em; }
+  .whathappens li { margin-bottom: 6px; }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 480px) {
+    .step { grid-template-columns: 32px 1fr; gap: 12px; }
+    .step-num { width: 32px; height: 32px; font-size: 0.9rem; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+
+<main>
+
+  <header class="masthead">
+    <p class="kicker">Crypto Research Brief · Setup Guide</p>
+    <h1>Setting this up (and taking it off your computer)</h1>
+    <p class="lede">You don't need to know anything about coding or AI to follow this. Do each step in order — it takes about <strong>10 minutes</strong>. This only works on a <strong>Mac</strong>.</p>
+  </header>
+
+  <section class="part install">
+    <div class="part-head">
+      <span class="part-eyebrow">Part 1</span>
+      <h2>Setting it up</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Open Terminal</h3>
+        <p>Terminal is an app already on your Mac — it lets you type commands instead of clicking things.</p>
+        <ol>
+          <li>Press <kbd>⌘ Command</kbd> + <kbd>Space</kbd> at the same time. A search box pops up.</li>
+          <li>Type <code class="inline">Terminal</code></li>
+          <li>Press <kbd>Enter</kbd></li>
+        </ol>
+        <p>A plain window will open, showing some text ending in a <code class="inline">$</code>. That's where you'll type everything below.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Get two accounts set up</h3>
+        <p>Before installing anything, you need two "keys" — think of a key as a password that lets this tool fetch data on your behalf.</p>
+        <p><strong>Key 1 — Anthropic</strong> (this is what writes the brief itself)</p>
+        <ol>
+          <li>Go to <code class="inline">console.anthropic.com</code> and sign up.</li>
+          <li>You'll need to add a card.
+            <div class="callout"><strong>Cost:</strong> pay-as-you-go, but one short brief a day typically runs a few cents a month.</div>
+          </li>
+          <li>Find <strong>"API Keys"</strong> in the left-hand menu, click <strong>"Create Key"</strong>, and copy the long string it gives you. Paste it somewhere temporary (like Notes) — you'll need it again in Step 4.</li>
+        </ol>
+        <p><strong>Key 2 — NewsAPI</strong> (finds headlines — free)</p>
+        <ol>
+          <li>Go to <code class="inline">newsapi.org/register</code> and sign up.</li>
+          <li>Copy your API key from your account page and save it next to the first one.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Get the project onto your computer</h3>
+        <p>You should have received a file called <code class="inline">crypto_research_assistant.zip</code> (by AirDrop, email, or a file-sharing link).</p>
+        <ol>
+          <li>Find it in your <strong>Downloads</strong> folder and double-click it — it unzips into a regular folder named <code class="inline">crypto_research_assistant</code>.</li>
+          <li>Move that folder somewhere you'll remember — your <strong>Home</strong> folder (the one with the little house icon in Finder) is a good default.</li>
+          <li>Back in Terminal, move into that folder:</li>
+        </ol>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
+          </div>
+        </div>
+        <p>If Terminal says <em>"No such file or directory,"</em> the folder likely landed somewhere else — type <code class="inline">cd </code> (with a trailing space, no Enter yet), then drag the folder from Finder into the Terminal window, which fills in the correct path for you.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Run the installer</h3>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line"><span class="prompt">$ </span>./install.sh</div>
+          </div>
+        </div>
+        <ol>
+          <li>It'll ask a series of questions, one at a time. Type your answer and press <kbd>Enter</kbd> — or if you see something in <code class="inline">[brackets]</code>, pressing <kbd>Enter</kbd> alone uses that as the default.</li>
+          <li>When asked for your Anthropic or NewsAPI key, paste the one you saved in Step 2 (<kbd>⌘</kbd> + <kbd>V</kbd>) and press <kbd>Enter</kbd>.</li>
+          <li>It checks that both keys actually work. If one fails, it'll say clearly which — usually a typo. Run <code class="inline">./install.sh</code> again to retry.</li>
+          <li>When you see <code class="inline">=== Setup complete ===</code>, you're done.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="whathappens">
+      <h3>What happens now</h3>
+      <p>Every day at the time you chose (8:00 AM by default), this automatically:</p>
+      <ul>
+        <li>Checks today's crypto prices and news</li>
+        <li>Has Claude write a short brief about it</li>
+        <li>Saves a nicely formatted copy into your <strong>iCloud Drive</strong>, in a folder called <strong>CryptoBriefs</strong> (or whatever name you chose)</li>
+      </ul>
+      <p style="margin-top:12px">You don't need to keep Terminal open — it runs on its own, as long as your Mac isn't asleep or off.</p>
+      <p style="margin-top:12px">Want a brief right now instead of waiting?</p>
+      <div class="term">
+        <div class="term-bar"><span></span><span></span><span></span></div>
+        <div class="term-body">
+          <div class="term-line"><span class="prompt">$ </span>.venv/bin/python3 main.py</div>
+        </div>
+      </div>
+      <p style="margin-top:4px">To change what time it runs or the delivery folder name later:</p>
+      <div class="term">
+        <div class="term-bar"><span></span><span></span><span></span></div>
+        <div class="term-body">
+          <div class="term-line"><span class="prompt">$ </span>./configure.sh</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="part removal">
+    <div class="part-head">
+      <span class="part-eyebrow">Part 2</span>
+      <h2>Taking it off your computer</h2>
+    </div>
+    <p class="part-note">If you ever want to stop this — for any reason, no explanation needed — here's how. It's built to be careful about not deleting things you might want to keep.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Open Terminal and go to the project folder</h3>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
+          </div>
+        </div>
+        <p>If you get an error saying that folder doesn't exist, it may be somewhere else — ask whoever set this up where it's located.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Run the uninstaller</h3>
+        <div class="term">
+          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-body">
+            <div class="term-line"><span class="prompt">$ </span>./uninstall.sh</div>
+          </div>
+        </div>
+        <p>It immediately turns off the daily automatic brief — no questions asked, since that part is completely safe to undo (just run <code class="inline">./install.sh</code> again).</p>
+        <p>Then it asks three separate yes/no questions, one at a time, about whether to also delete:</p>
+        <ul>
+          <li>Some technical setup files <em>(fine to delete — <code class="inline">y</code>)</em></li>
+          <li>Your saved keys/settings <em>(say <code class="inline">n</code> if you might reinstall later)</em></li>
+          <li>Your saved past briefs <em>(say <code class="inline">n</code> if you want to keep reading them)</em></li>
+        </ul>
+        <p>Type <code class="inline">y</code> + <kbd>Enter</kbd> for yes, <code class="inline">n</code> + <kbd>Enter</kbd> for no — or just press <kbd>Enter</kbd> alone for "no," the safe default.</p>
+      </div>
+    </div>
+
+    <div class="whathappens">
+      <h3>What's left afterward</h3>
+      <p>The project folder itself stays on your computer either way — nothing here deletes it automatically. If you want it gone completely, drag the <code class="inline">crypto_research_assistant</code> folder to the Trash yourself, same as any other folder.</p>
+    </div>
+  </section>
+
+  <footer>
+    <strong>If something goes wrong:</strong> nothing here can damage your computer — worst case, a brief doesn't get generated one day. Copy the exact text Terminal showed you and send it to whoever gave you this project.
+  </footer>
+
+</main>
