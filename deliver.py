@@ -51,7 +51,7 @@ STYLE = """
   h2 {
     font-size: 1.05rem; color: var(--text-secondary); text-transform: uppercase;
     letter-spacing: 0.03em; border-bottom: 1px solid var(--gridline);
-    padding-bottom: 6px; margin-top: 32px;
+    padding-bottom: 6px; margin-top: 18px;
   }
   .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; }
   .tile {
@@ -87,10 +87,11 @@ STYLE = """
   }
   .gauge-scale { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.7rem; margin-top: 4px; }
 
-  .prose { margin-top: 8px; }
+  .prose { margin-top: 28px; }
   .prose p { margin: 10px 0; }
+  .prose ul { margin: 0 0 10px; padding-left: 20px; }
   .prose strong { color: var(--text-primary); }
-  hr { border: none; margin: 24px 0; }
+  hr { border: none; margin: 0; }
 
   .disclaimer { color: var(--muted); font-size: 0.7rem; font-style: italic; margin-top: 24px; }
 </style>
