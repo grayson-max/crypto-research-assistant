@@ -68,10 +68,9 @@
   }
   h1 {
     font-family: ui-serif, Georgia, "Times New Roman", serif;
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 600;
     line-height: 1.15;
-    text-wrap: balance;
     margin: 0 0 12px;
   }
   .lede {
@@ -287,10 +286,12 @@
     font-size: 0.9rem;
   }
 
+  @media (min-width: 600px) {
+    h1 { white-space: nowrap; }
+  }
   @media (max-width: 480px) {
     .step { grid-template-columns: 32px 1fr; gap: 12px; }
     .step-num { width: 32px; height: 32px; font-size: 0.9rem; }
-    h1 { font-size: 1.6rem; }
   }
 </style>
 
