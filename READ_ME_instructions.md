@@ -62,6 +62,11 @@ You should have received a file called **`crypto_research_assistant.zip`**
 2. Move that folder somewhere you'll remember — your **Home** folder
    (the one with the little house icon in Finder) is a good default.
 
+   Don't see a Home folder in Finder's sidebar? That's normal — many
+   Macs don't show it by default. Press **Command (⌘) + Shift + H** to
+   jump straight to it, or click **Finder → Settings → Sidebar** and
+   check the box next to your username to pin it there permanently.
+
    **Don't put it inside Desktop, Documents, or Downloads.** macOS
    blocks background scheduling from touching files in those three
    folders unless you separately grant access in System Settings, so
