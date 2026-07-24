@@ -28,6 +28,7 @@ KNOWN_TERMS = {
     "L1", "L2", "layer1", "layer2", "ath", "atl", "bullish", "bearish",
     "api", "tokenized", "tokenization", "memecoin", "memecoins", "intraday",
     "timeframes", "timeframe", "drawdown", "drawdowns",
+    "app", "malware", "permissioned",
 }
 
 
