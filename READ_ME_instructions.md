@@ -68,10 +68,11 @@ You should have received a file called **`crypto_research_assistant.zip`**
    the daily automatic brief would silently stop working with no error
    message telling you why. Your Home folder itself, or any other
    regular folder, is fine.
-3. Back in Terminal, type this and press Enter, to move into that folder:
+3. Back in Terminal, move into that folder by typing:
    ```
    cd crypto_research_assistant
    ```
+   and press Enter.
    If Terminal says "No such file or directory," you likely moved the
    folder somewhere else — type `cd ` (with a trailing space, no Enter
    yet), then drag the folder from Finder into the Terminal window,
@@ -83,10 +84,11 @@ finish, then repeat Step 3.
 
 ## Step 4: Run the installer
 
-1. In Terminal, type exactly this and press Enter:
+1. In Terminal, run the installer by typing:
    ```
    ./install.sh
    ```
+   and press Enter.
 2. It will ask you a series of questions, one at a time. For each one,
    just type your answer and press Enter — or if you see something in
    `[brackets]`, pressing Enter by itself uses that as the default.
@@ -111,8 +113,8 @@ You don't need to keep Terminal open, and you don't need to do anything
 else — it runs on its own, even if you're not using your computer at the
 time, as long as your Mac isn't asleep or turned off.
 
-To see a brief right away instead of waiting, type this in Terminal
-from inside the project folder:
+To see a brief right away instead of waiting, run it by typing this in
+Terminal from inside the project folder:
 ```
 .venv/bin/python3 main.py
 ```
