@@ -26,11 +26,26 @@ else
 fi
 
 # --- 2. Remove the launchd catch-up agent ---
-PLIST_LABEL="com.cryptoresearch.catchup"
+# Label is derived from PROJECT_DIR the same way install.sh sets it up
+# (see its step 7 for why) — plus a check for the old shared-name agent
+# in case this project was installed before that fix.
+PLIST_LABEL="com.cryptoresearch.catchup.$(printf '%s' "$PROJECT_DIR" | shasum -a 256 | cut -c1-12)"
 PLIST_PATH="$HOME/Library/LaunchAgents/$PLIST_LABEL.plist"
+LEGACY_PLIST_PATH="$HOME/Library/LaunchAgents/com.cryptoresearch.catchup.plist"
+
+REMOVED_AGENT=0
 if [ -f "$PLIST_PATH" ]; then
     launchctl unload "$PLIST_PATH" 2>/dev/null || true
     rm "$PLIST_PATH"
+    REMOVED_AGENT=1
+fi
+if [ -f "$LEGACY_PLIST_PATH" ]; then
+    launchctl unload "$LEGACY_PLIST_PATH" 2>/dev/null || true
+    rm "$LEGACY_PLIST_PATH"
+    REMOVED_AGENT=1
+fi
+
+if [ "$REMOVED_AGENT" = "1" ]; then
     echo "[2/2] Removed the launchd catch-up agent."
 else
     echo "[2/2] No launchd catch-up agent found, skipping."

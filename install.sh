@@ -155,8 +155,22 @@ scripts/schedule.sh "$SCHEDULE_TIME"
 # yet?") so a missed run still catches up shortly after the Mac wakes up.
 echo "[7/7] Setting up the catch-up check (launchd)..."
 chmod +x run_if_missing.sh
-PLIST_LABEL="com.cryptoresearch.catchup"
+
+# The label is derived from PROJECT_DIR (like the cron entry already is)
+# so two installs on the same Mac never collide by overwriting each
+# other's agent — a shared fixed label previously meant the second
+# install run would silently repoint the first one's catch-up watchdog.
+PLIST_LABEL="com.cryptoresearch.catchup.$(printf '%s' "$PROJECT_DIR" | shasum -a 256 | cut -c1-12)"
 PLIST_PATH="$HOME/Library/LaunchAgents/$PLIST_LABEL.plist"
+
+# One-time migration: remove the old shared-name agent from before this
+# fix, if present, so it doesn't keep running alongside the new one.
+LEGACY_PLIST_PATH="$HOME/Library/LaunchAgents/com.cryptoresearch.catchup.plist"
+if [ -f "$LEGACY_PLIST_PATH" ]; then
+    launchctl unload "$LEGACY_PLIST_PATH" 2>/dev/null || true
+    rm "$LEGACY_PLIST_PATH"
+    echo "      (Migrated from the old shared launchd agent name.)"
+fi
 
 launchctl unload "$PLIST_PATH" 2>/dev/null || true  # ignore error if not loaded yet
 
