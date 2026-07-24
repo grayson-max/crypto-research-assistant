@@ -61,6 +61,13 @@ You should have received a file called **`crypto_research_assistant.zip`**
    `crypto_research_assistant`.
 2. Move that folder somewhere you'll remember — your **Home** folder
    (the one with the little house icon in Finder) is a good default.
+
+   **Don't put it inside Desktop, Documents, or Downloads.** macOS
+   blocks background scheduling from touching files in those three
+   folders unless you separately grant access in System Settings, so
+   the daily automatic brief would silently stop working with no error
+   message telling you why. Your Home folder itself, or any other
+   regular folder, is fine.
 3. Back in Terminal, type this and press Enter, to move into that folder:
    ```
    cd crypto_research_assistant
