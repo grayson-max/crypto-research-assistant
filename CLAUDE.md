@@ -72,6 +72,63 @@ iCloud Drive (path from `config.json`'s `delivery.folder_name`) — the
 HTML is the styled version and often the one place layout/chart changes
 are actually visible.
 
+## When verification flags something in a brief
+
+Every brief is checked by `verify_brief.py` (run from `main.py` right
+after generation, before delivery): every `$`/`%` figure in the AI-written
+text is cross-checked against the actual fetched market data, and every
+word is checked against a general English dictionary plus a whitelist of
+known crypto/finance terms.
+
+A figure that doesn't match the fetched market data isn't automatically
+treated as an error — it's first checked against that day's fetched
+headlines (`fetch_headlines.py`, which carries a `source` field per
+article). If it matches a number quoted in a headline, an inline
+`*Source: <publisher>*` citation is inserted right under that line in the
+brief (nested in the same bullet) instead of being flagged — it wasn't
+fetched by us, but it wasn't invented either. Only figures that match
+neither the market data nor any headline, plus any spelling flags, are
+appended as a visible "⚠️ Verification Notes" list at the bottom of that
+day's brief — delivery is never blocked, it's just a heads-up for review.
+
+If the user notices a flagged item (or any other spelling/data problem)
+in a specific day's brief and wants it handled going forward, they don't
+need to know which file to edit — just describe what happened in plain
+language (e.g. "today's brief flagged 'zk-rollup' as a misspelling but
+that's a real term" or "the brief said BTC was at $70k but that's wrong")
+and Claude should diagnose and fix it:
+
+- **A real term flagged as a misspelling** (a crypto/finance term,
+  ticker, or company/product name from that day's news) — add it to
+  `KNOWN_TERMS` in `verify_brief.py` so it stops being flagged. This is
+  the most common case, since the news brings new proper nouns daily
+  that no static dictionary knows in advance.
+- **A genuine typo the AI wrote** — this is generated per-day, not from
+  a fixed list, so there's nothing to patch for a one-off occurrence. If
+  the same *kind* of mistake keeps recurring, tighten the wording/rules
+  in `generate_brief.py`'s `SYSTEM_PROMPT` instead.
+- **A dollar figure or percentage still flagged as "unverified" despite
+  clearly coming from a news headline** — this means `_headline_source`
+  in `verify_brief.py` failed to match it, most likely because the AI
+  paraphrased the number differently than the headline stated it (e.g.
+  rounded differently, or converted units). Check the actual headline
+  text (rerun `fetch_headlines.py` standalone, or check `main.py`'s
+  console output) against the brief's wording to confirm, then loosen the
+  matching tolerance or normalization in `_headline_source`.
+- **A number that's genuinely wrong** (the AI stated a different price,
+  percentage, or market cap than what was actually fetched that day) —
+  confirm by reading the matching `reports/brief_<date>.md` next to that
+  day's fetched values (rerun `fetch_market_data.py`/etc. standalone if
+  needed to see what was available at the time), then adjust
+  `generate_brief.py`'s `build_prompt` or `SYSTEM_PROMPT` to reduce the
+  chance of it happening again.
+
+After any fix, regenerate a brief to confirm the flag is gone (or, for a
+one-off AI typo, just confirm nothing broke):
+```
+.venv/bin/python3 main.py
+```
+
 ## Automation and troubleshooting
 
 - `cron.log` — check here first if a day's brief seems to be missing.

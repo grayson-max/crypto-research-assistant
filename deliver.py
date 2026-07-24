@@ -210,6 +210,15 @@ def _fear_greed_gauge(fear_greed: dict) -> str:
     """
 
 
+def _ensure_blank_line_before_lists(text: str) -> str:
+    """The `markdown` package (unlike GitHub/CommonMark) won't recognize a
+    bullet list that directly follows a non-blank, non-bullet line — it
+    folds everything into one run-on paragraph instead. The AI writes bold
+    lead-ins directly above their bullets with no blank line, so insert one
+    before every list start that's missing it."""
+    return re.sub(r"^(?!-)(?!\s*$)(.+)\n(-\s)", r"\1\n\n\2", text, flags=re.MULTILINE)
+
+
 def render_html(
     brief_md: str,
     market_data: dict,
@@ -238,7 +247,7 @@ def render_html(
         body_md = body_md[: disclaimer_match.start()]
         disclaimer_html = f'<p class="disclaimer">{disclaimer_match.group(1)}</p>'
 
-    prose_html = markdown.markdown(body_md)
+    prose_html = markdown.markdown(_ensure_blank_line_before_lists(body_md))
 
     return f"""<html><head><meta charset="utf-8">{STYLE}</head><body>
       <h1>Daily Crypto Research Brief</h1>

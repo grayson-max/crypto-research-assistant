@@ -15,8 +15,9 @@ from fetch_headlines import fetch_headlines
 from fetch_fear_greed import fetch_fear_greed
 from fetch_dominance import fetch_dominance
 from sentiment import tag_headlines
-from generate_brief import generate_brief
+from generate_brief import generate_brief, DISCLAIMER
 from deliver import deliver_to_icloud, notify_done
+from verify_brief import verify_brief
 
 load_dotenv()
 
@@ -45,6 +46,19 @@ def run() -> None:
     dominance = fetch_dominance()
     brief = generate_brief(market_data, headlines, fear_greed)
 
+    brief, issues = verify_brief(brief, market_data, dominance, fear_greed, headlines)
+    if issues:
+        warning_section = (
+            "\n\n## ⚠️ Verification Notes\n"
+            "_Automated checks flagged the following — review before relying on this brief:_\n\n"
+            + "\n".join(f"- {issue}" for issue in issues)
+            + "\n"
+        )
+        brief = brief.replace(DISCLAIMER, warning_section + DISCLAIMER)
+        print(f"Verification flagged {len(issues)} issue(s):")
+        for issue in issues:
+            print(f"  - {issue}")
+
     today = date.today()
     stem = f"brief_{today.isoformat()}"
 
@@ -59,7 +73,8 @@ def run() -> None:
     )
     print(f"Delivered to {icloud_path}")
 
-    notify_done(f"Synced to iCloud Drive: {icloud_path.name}")
+    suffix = f" ({len(issues)} verification issue(s) flagged)" if issues else ""
+    notify_done(f"Synced to iCloud Drive: {icloud_path.name}{suffix}")
 
 
 def main() -> None:
