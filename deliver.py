@@ -102,6 +102,7 @@ STYLE = """
 
   .disclaimer { color: var(--muted); font-size: 0.7rem; font-style: italic; margin-top: 24px; }
   .sources-note { color: var(--muted); font-size: 0.65rem; margin-top: 4px; }
+  .citation { color: var(--muted); font-size: 0.7rem; font-style: italic; }
 </style>
 """
 
@@ -250,6 +251,12 @@ def render_html(
         disclaimer_html = f'<p class="disclaimer">{disclaimer_match.group(1)}</p>'
 
     prose_html = markdown.markdown(_ensure_blank_line_before_lists(body_md))
+
+    # verify_brief.py inserts headline-sourced citations as a plain italic
+    # "*Source: ...*" line (see annotate_and_verify_numbers) so the raw .md
+    # stays plain-text readable; here in the styled HTML they get a smaller,
+    # more muted treatment than the AI's own emphasis would.
+    prose_html = re.sub(r"<em>(Source: [^<]+)</em>", r'<span class="citation">\1</span>', prose_html)
 
     return f"""<html><head><meta charset="utf-8">{STYLE}</head><body>
       <h1>Daily Crypto Research Brief</h1>
