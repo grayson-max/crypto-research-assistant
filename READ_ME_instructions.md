@@ -205,14 +205,17 @@ the change and tells you what it did.
 
 ## Step 3: Open it inside this project
 
-1. Open Terminal and go to the project folder, same as always:
+1. Open Terminal and go to the project folder, same as always, by
+   typing:
    ```
    cd crypto_research_assistant
    ```
-2. Type:
+   and press Enter.
+2. As a separate action, type:
    ```
    claude
    ```
+   and press Enter.
 3. Wait for it to start up — you'll see a prompt where you can type a
    message.
 
