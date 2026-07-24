@@ -25,6 +25,11 @@ REPORTS_DIR = Path(__file__).parent / "reports"
 
 REQUIRED_ENV_VARS = ["ANTHROPIC_API_KEY", "NEWSAPI_API_KEY"]
 
+SOURCES_NOTE = (
+    "Data sources: CoinGecko (price, market cap, dominance), "
+    "Alternative.me (Fear & Greed Index), NewsAPI (headlines)."
+)
+
 
 def check_env_vars() -> None:
     """Fail fast with a clear message if setup is incomplete, instead of a
@@ -64,12 +69,12 @@ def run() -> None:
 
     REPORTS_DIR.mkdir(exist_ok=True)
     out_path = REPORTS_DIR / f"{stem}.md"
-    out_path.write_text(brief)
+    out_path.write_text(f"{brief}\n\n_{SOURCES_NOTE}_\n")
     print(f"Saved brief to {out_path}")
 
     icloud_path = deliver_to_icloud(
         brief, stem, market_data, dominance, fear_greed,
-        today.strftime("%A, %B %-d, %Y"),
+        today.strftime("%A, %B %-d, %Y"), SOURCES_NOTE,
     )
     print(f"Delivered to {icloud_path}")
 

@@ -101,6 +101,7 @@ STYLE = """
   hr { border: none; margin: 0; }
 
   .disclaimer { color: var(--muted); font-size: 0.7rem; font-style: italic; margin-top: 24px; }
+  .sources-note { color: var(--muted); font-size: 0.65rem; margin-top: 4px; }
 </style>
 """
 
@@ -225,6 +226,7 @@ def render_html(
     dominance: dict,
     fear_greed: dict,
     report_date: str,
+    sources_note: str,
 ) -> str:
     """Assemble the full styled report: KPI row, gauge, and AI-written prose
     (as HTML) — the disclaimer paragraph already embedded in brief_md rides
@@ -258,6 +260,7 @@ def render_html(
 
       <div class="prose">{prose_html}</div>
       {disclaimer_html}
+      <p class="sources-note">{sources_note}</p>
     </body></html>"""
 
 
@@ -268,11 +271,12 @@ def deliver_to_icloud(
     dominance: dict,
     fear_greed: dict,
     report_date: str,
+    sources_note: str,
 ) -> Path:
     """Render the full styled report and save it into the iCloud Drive
     folder, which syncs to any of the user's other Apple devices."""
     ICLOUD_DIR.mkdir(parents=True, exist_ok=True)
-    html = render_html(brief_md, market_data, dominance, fear_greed, report_date)
+    html = render_html(brief_md, market_data, dominance, fear_greed, report_date, sources_note)
     html_path = ICLOUD_DIR / f"{filename_stem}.html"
     html_path.write_text(html)
     return html_path
