@@ -58,13 +58,21 @@
     -webkit-font-smoothing: antialiased;
   }
   main {
-    max-width: 900px;
+    max-width: 680px;
     margin: 0 auto;
-    padding: 56px clamp(24px, 4vw, 56px) 96px;
+    padding: 56px clamp(24px, 6vw, 64px) 96px;
   }
 
   header.masthead {
-    margin-bottom: 32px;
+    margin-bottom: 40px;
+  }
+  .kicker {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
   }
   h1 {
     font-family: ui-serif, Georgia, "Times New Roman", serif;
@@ -72,7 +80,7 @@
     font-weight: 600;
     line-height: 1.15;
     text-wrap: balance;
-    margin: 0 0 16px;
+    margin: 0 0 12px;
   }
   .lede {
     color: var(--ink-soft);
@@ -84,8 +92,8 @@
 
   .toc {
     list-style: none;
-    margin: 24px 0 0;
-    padding: 16px 20px;
+    margin: 22px 0 0;
+    padding: 14px 18px;
     border: 1px solid var(--border);
     border-radius: 10px;
     background: var(--surface);
@@ -121,7 +129,7 @@
     gap: 14px;
     border-bottom: 1px solid var(--border);
     padding-bottom: 14px;
-    margin-bottom: 16px;
+    margin-bottom: 28px;
   }
   .part-eyebrow {
     font-family: ui-serif, Georgia, serif;
@@ -151,7 +159,7 @@
   .part-note {
     color: var(--ink-soft);
     font-size: 0.95rem;
-    margin: 0 0 8px;
+    margin: -18px 0 26px;
     max-width: 62ch;
   }
 
@@ -159,7 +167,7 @@
     display: grid;
     grid-template-columns: 40px 1fr;
     gap: 18px;
-    margin: 32px 0;
+    margin-bottom: 30px;
   }
   .step-num {
     width: 40px;
@@ -178,16 +186,15 @@
   .step-body h3 {
     font-size: 1.08rem;
     font-weight: 600;
-    margin: 0 0 8px;
+    margin: 6px 0 8px;
   }
-  .step-body p { margin: 0 0 16px; max-width: 62ch; }
+  .step-body p { margin: 0 0 10px; max-width: 62ch; }
   .step-body ol, .step-body ul {
-    margin: 0 0 16px;
+    margin: 0 0 10px;
     padding-left: 1.25em;
   }
-  .step-body li { margin-bottom: 8px; }
+  .step-body li { margin-bottom: 6px; }
   .step-body li::marker { color: var(--ink-soft); }
-  .step-body > :last-child { margin-bottom: 0; }
 
   kbd {
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
@@ -210,7 +217,7 @@
     background: var(--term-bg);
     border-radius: 9px;
     overflow: hidden;
-    margin: 16px 0;
+    margin: 12px 0 14px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.08);
   }
   .term-bar {
@@ -242,7 +249,7 @@
     background: var(--amber-soft);
     border-radius: 0 8px 8px 0;
     padding: 12px 16px;
-    margin: 16px 0;
+    margin: 12px 0 16px;
     font-size: 0.95rem;
   }
   .callout strong { color: var(--amber); }
@@ -252,17 +259,15 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 20px 22px;
-    margin: 24px 0;
+    margin-top: 8px;
   }
   .whathappens h3 {
     font-family: ui-serif, Georgia, serif;
     font-size: 1.1rem;
-    margin: 0 0 16px;
+    margin: 0 0 12px;
   }
-  .whathappens p, .whathappens ul, .whathappens .term { margin: 0; }
-  .whathappens > * + * { margin-top: 16px; }
-  .whathappens ul { padding-left: 1.2em; }
-  .whathappens li { margin-bottom: 8px; }
+  .whathappens ul { margin: 0; padding-left: 1.2em; }
+  .whathappens li { margin-bottom: 6px; }
 
   .issue {
     background: var(--surface);
@@ -270,7 +275,7 @@
     border-left: 3px solid var(--accent);
     border-radius: 0 10px 10px 0;
     padding: 16px 20px;
-    margin: 16px 0;
+    margin-bottom: 16px;
   }
   .issue h3 {
     font-size: 1.02rem;
@@ -280,7 +285,7 @@
   .issue p { margin: 0 0 8px; max-width: 62ch; }
   .issue p:last-child { margin-bottom: 0; }
   .issue ul, .issue ol { margin: 8px 0; padding-left: 1.2em; }
-  .issue li { margin-bottom: 8px; }
+  .issue li { margin-bottom: 6px; }
 
   footer {
     margin-top: 56px;
@@ -300,7 +305,8 @@
 <main>
 
   <header class="masthead">
-    <h1>Crypto Research Brief · Setup Guide</h1>
+    <p class="kicker">Crypto Research Brief · Setup Guide</p>
+    <h1>Setting this up (and taking it off your computer)</h1>
     <p class="lede">You don't need to know anything about coding or AI to follow this. Do each step in order — it takes about <strong>10 minutes</strong>. This only works on a <strong>Mac</strong>.</p>
     <ul class="toc">
       <li><span class="toc-num">1</span> <a href="#setup">Setting it up</a> <span class="toc-desc">— first-time install</span></li>
@@ -402,15 +408,15 @@
         <li>Has Claude write a short brief about it</li>
         <li>Saves a nicely formatted copy into your <strong>iCloud Drive</strong>, in a folder called <strong>CryptoBriefs</strong> (or whatever name you chose)</li>
       </ul>
-      <p>You don't need to keep Terminal open — it runs on its own, as long as your Mac isn't asleep or off.</p>
-      <p>Want a brief right now instead of waiting? Run it by typing:</p>
+      <p style="margin-top:12px">You don't need to keep Terminal open — it runs on its own, as long as your Mac isn't asleep or off.</p>
+      <p style="margin-top:12px">Want a brief right now instead of waiting? Run it by typing:</p>
       <div class="term">
         <div class="term-bar"><span></span><span></span><span></span></div>
         <div class="term-body">
           <div class="term-line"><span class="prompt">$ </span>.venv/bin/python3 main.py</div>
         </div>
       </div>
-      <p>Want to change the schedule or delivery folder later? See 2 below.</p>
+      <p style="margin-top:12px">Want to change the schedule or delivery folder later? See 2 below.</p>
     </div>
   </section>
 
@@ -466,7 +472,7 @@
     <div class="whathappens">
       <h3>Example</h3>
       <p>To move the daily brief from 8:00 AM to 5:30 PM: run <code class="inline">./configure.sh</code>, type <code class="inline">17:30</code> at the schedule prompt, then press <kbd>Enter</kbd> at the folder prompt to leave it as-is.</p>
-      <p>Changing which coins are tracked isn't a guided prompt yet — that means editing a settings file directly, which is more technical. Ask whoever set this up for you if you need that changed.</p>
+      <p style="margin-top:10px">Changing which coins are tracked isn't a guided prompt yet — that means editing a settings file directly, which is more technical. Ask whoever set this up for you if you need that changed.</p>
     </div>
   </section>
 
