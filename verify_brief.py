@@ -56,30 +56,48 @@ def _parse_dollar(raw: str, suffix: str | None) -> float:
     return value
 
 
-def _has_match(value: float, expected: list[float]) -> bool:
-    """True if `value` is close to something in `expected` — a fixed
-    absolute tolerance handles rounding on small percentages, a relative
-    tolerance handles rounding on large dollar figures."""
-    return any(abs(value - exp) <= max(0.05, abs(exp) * 0.01) for exp in expected)
+def _rounding_tolerance(raw: str, suffix: str | None) -> float:
+    """How much a figure could be off from its true value purely from the
+    rounding/formatting the AI chose to display it with — e.g. "$1.6B" only
+    carries one decimal digit of precision in billions (±$50M), so anything
+    within that range is the same figure, not a hallucination. Without this,
+    coarser rounding on large numbers (more common the bigger the number
+    gets) kept getting flagged as "unverified" even when it matched exactly."""
+    decimals = len(raw.split(".", 1)[1]) if "." in raw else 0
+    unit = 10 ** (-decimals)
+    if suffix:
+        unit *= SUFFIX_MULTIPLIERS[suffix.upper()]
+    return unit / 2
 
 
-def _figure_candidates(match: re.Match, is_percent: bool) -> list[float]:
-    """The numeric value(s) a regex match could represent — a bare percentage
-    with no explicit sign could be either, since prose often states a change
-    as an unsigned magnitude with direction implied by a nearby word
+def _has_match(value: float, expected: list[float], tolerance: float = 0.0) -> bool:
+    """True if `value` is close to something in `expected` — the larger of a
+    small relative/absolute floor (for typical price/percent rounding) and
+    the caller's format-derived `tolerance` (for coarser rounding on larger
+    figures) counts as a match."""
+    return any(abs(value - exp) <= max(0.05, abs(exp) * 0.01, tolerance) for exp in expected)
+
+
+def _figure_candidates(match: re.Match, is_percent: bool) -> tuple[list[float], float]:
+    """The numeric value(s) a regex match could represent, plus the rounding
+    tolerance implied by how it's formatted. A bare percentage with no
+    explicit sign could be either sign, since prose often states a change as
+    an unsigned magnitude with direction implied by a nearby word
     ("down 1.0%", "off 1.3%")."""
     if is_percent:
+        raw = match.group(0).rstrip("%").lstrip("+-")
         value = float(match.group(0).rstrip("%"))
-        return [value] if match.group(0)[0] in "+-" else [value, -value]
-    return [_parse_dollar(match.group(1), match.group(2))]
+        values = [value] if match.group(0)[0] in "+-" else [value, -value]
+        return values, _rounding_tolerance(raw, None)
+    tolerance = _rounding_tolerance(match.group(1), match.group(2))
+    return [_parse_dollar(match.group(1), match.group(2))], tolerance
 
 
-def _headline_source(candidates: list[float], headlines: list[dict]) -> str | None:
+def _headline_source(candidates: list[float], tolerance: float, headlines: list[dict]) -> str | None:
     """Return the source name of the first headline whose own text quotes a
     number matching one of `candidates` — i.e. this figure was pulled from
     that article, not invented, even though it isn't in our fetched market
-    data. Matching is tight (0.5%) since a quoted figure should reproduce
-    exactly, unlike rounded price/percent data."""
+    data."""
     for item in headlines:
         headline_text = item.get("headline") or ""
         found = [
@@ -87,7 +105,7 @@ def _headline_source(candidates: list[float], headlines: list[dict]) -> str | No
         ] + [
             float(m.group(0).rstrip("%")) for m in PERCENT_RE.finditer(headline_text)
         ]
-        if any(abs(v - f) <= max(0.01, abs(f) * 0.005) for v in candidates for f in found):
+        if any(abs(v - f) <= max(0.01, abs(f) * 0.005, tolerance) for v in candidates for f in found):
             return item.get("source")
     return None
 
@@ -113,11 +131,11 @@ def annotate_and_verify_numbers(
 
         for match in matches:
             is_percent = match.group(0).endswith("%")
-            candidates = _figure_candidates(match, is_percent)
-            if any(_has_match(v, expected) for v in candidates):
+            candidates, tolerance = _figure_candidates(match, is_percent)
+            if any(_has_match(v, expected, tolerance) for v in candidates):
                 continue
 
-            source = _headline_source(candidates, headlines)
+            source = _headline_source(candidates, tolerance, headlines)
             if source:
                 sources.add(source)
             else:

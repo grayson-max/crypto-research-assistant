@@ -54,6 +54,8 @@ PYEOF
 echo "Updated config.json"
 
 scripts/schedule.sh "$NEW_TIME"
+chmod +x scripts/copy_guide.sh
+scripts/copy_guide.sh "$NEW_FOLDER"
 
 echo ""
 echo "Done. Briefs will now be delivered to iCloud Drive > $NEW_FOLDER at $NEW_TIME daily."

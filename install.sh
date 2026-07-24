@@ -201,6 +201,11 @@ launchctl load "$PLIST_PATH"
 
 FOLDER_NAME=$(.venv/bin/python3 -c "from config import load_config; print(load_config()['delivery']['folder_name'])")
 
+# Put the setup/removal guide right where the briefs actually land, so
+# it's easy to find later even if the project folder is forgotten.
+chmod +x scripts/copy_guide.sh
+scripts/copy_guide.sh "$FOLDER_NAME"
+
 echo ""
 echo "=== Setup complete ==="
 echo "Your first brief will generate automatically at $SCHEDULE_TIME (or within"
