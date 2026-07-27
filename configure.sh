@@ -59,3 +59,4 @@ scripts/copy_guide.sh "$NEW_FOLDER"
 
 echo ""
 echo "Done. Briefs will now be delivered to iCloud Drive > $NEW_FOLDER at $NEW_TIME daily."
+echo "(A copy of the setup/removal guide is saved there too.)"
