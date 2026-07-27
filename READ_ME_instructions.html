@@ -225,16 +225,43 @@
   }
   .term-bar {
     display: flex;
-    gap: 6px;
+    align-items: center;
+    justify-content: space-between;
     padding: 9px 12px;
     background: rgba(255,255,255,0.04);
   }
-  .term-bar span {
+  .term-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .term-dots span {
     width: 10px; height: 10px; border-radius: 50%;
   }
-  .term-bar span:nth-child(1) { background: var(--red-dot); }
-  .term-bar span:nth-child(2) { background: var(--yellow-dot); }
-  .term-bar span:nth-child(3) { background: var(--green-dot); }
+  .term-dots span:nth-child(1) { background: var(--red-dot); }
+  .term-dots span:nth-child(2) { background: var(--yellow-dot); }
+  .term-dots span:nth-child(3) { background: var(--green-dot); }
+  .copy-btn {
+    font-family: ui-sans-serif, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.78rem;
+    line-height: 1;
+    color: var(--term-prompt);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+  .copy-btn:hover {
+    background: rgba(255,255,255,0.14);
+    color: var(--term-text);
+  }
+  .copy-btn.copied {
+    color: var(--green-dot);
+    border-color: var(--green-dot);
+  }
+  .copy-btn.no-copy {
+    display: none;
+  }
   .term-body {
     padding: 4px 16px 16px;
     overflow-x: auto;
@@ -361,7 +388,10 @@
           <li>A plain window opens, showing some text ending in a <code class="inline">$</code>. Paste the whole line below (<kbd>⌘</kbd> + <kbd>V</kbd>) and press <kbd>Enter</kbd>:</li>
         </ol>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line"><span class="prompt">$ </span>bash &lt;(curl -fsSL https://raw.githubusercontent.com/grayson-max/crypto-research-assistant/main/bootstrap.sh)</div>
           </div>
@@ -386,7 +416,10 @@
       <p style="margin-top:12px">You don't need to keep Terminal open — it runs on its own, as long as your Mac isn't asleep or off.</p>
       <p style="margin-top:12px">Want a brief right now instead of waiting? Run it by typing:</p>
       <div class="term">
-        <div class="term-bar"><span></span><span></span><span></span></div>
+        <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
         <div class="term-body">
           <div class="term-line"><span class="prompt">$ </span>.venv/bin/python3 main.py</div>
         </div>
@@ -407,7 +440,10 @@
       <div class="step-body">
         <h3>Open Terminal and go to the project folder</h3>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
           </div>
@@ -420,14 +456,20 @@
       <div class="step-body">
         <h3>Run the settings tool</h3>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line"><span class="prompt">$ </span>./configure.sh</div>
           </div>
         </div>
         <p>It first shows what's currently set:</p>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line">Current settings:</div>
             <div class="term-line">  Coins tracked: BTC, ETH, SOL</div>
@@ -485,7 +527,10 @@
           <li>Open Terminal and go to the project folder, same as always, by typing:</li>
         </ol>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
           </div>
@@ -495,7 +540,10 @@
           <li>As a separate action, type:</li>
         </ol>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line"><span class="prompt">$ </span>claude</div>
           </div>
@@ -544,7 +592,10 @@
       <div class="step-body">
         <h3>Open Terminal and go to the project folder</h3>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
           </div>
@@ -558,7 +609,10 @@
       <div class="step-body">
         <h3>Run the uninstaller</h3>
         <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
+          <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
           <div class="term-body">
             <div class="term-line"><span class="prompt">$ </span>./uninstall.sh</div>
           </div>
@@ -602,7 +656,10 @@
       <h3>"Permission denied" when running <code class="inline">./configure.sh</code> or <code class="inline">./uninstall.sh</code></h3>
       <p>The one-line install command in Step 2 already makes these runnable for you, so this only comes up if you're running one of them by hand in a copy of the project that didn't go through that command. Fix it once with:</p>
       <div class="term">
-        <div class="term-bar"><span></span><span></span><span></span></div>
+        <div class="term-bar">
+            <div class="term-dots"><span></span><span></span><span></span></div>
+            <button type="button" class="copy-btn">Copy</button>
+          </div>
         <div class="term-body">
           <div class="term-line"><span class="prompt">$ </span>chmod +x install.sh configure.sh uninstall.sh</div>
         </div>
@@ -655,5 +712,65 @@
 
 
 </main>
+
+<script>
+  document.querySelectorAll('.term').forEach(function (term) {
+    var btn = term.querySelector('.copy-btn');
+    var promptEl = term.querySelector('.term-line .prompt');
+    if (!btn) return;
+
+    // Blocks of sample output (like the "Current settings:" preview
+    // under configure.sh) have no "$ " prompt — nothing there is meant
+    // to be typed, so there's nothing to copy.
+    if (!promptEl) {
+      btn.classList.add('no-copy');
+      return;
+    }
+
+    var line = promptEl.closest('.term-line');
+    var commandText = line.textContent.slice(promptEl.textContent.length);
+
+    function showCopied() {
+      var original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function () {
+        btn.textContent = original;
+        btn.classList.remove('copied');
+      }, 1500);
+    }
+
+    function fallbackCopy() {
+      var ta = document.createElement('textarea');
+      ta.value = commandText;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      showCopied();
+    }
+
+    btn.addEventListener('click', function () {
+      // Safari is stricter than Chrome about the async Clipboard API on
+      // file:// pages (this guide is normally opened as a local file,
+      // not served over HTTP) — it can be missing entirely, or throw
+      // synchronously instead of just rejecting the promise. Guard both
+      // cases and fall back to the older execCommand('copy') approach,
+      // which works the same way in both browsers for local files.
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(commandText).then(showCopied, fallbackCopy);
+        } else {
+          fallbackCopy();
+        }
+      } catch (e) {
+        fallbackCopy();
+      }
+    });
+  });
+</script>
 </body>
 </html>
