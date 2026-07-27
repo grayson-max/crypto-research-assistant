@@ -574,8 +574,19 @@
     <p class="part-note">Nothing here can damage your computer — worst case, a brief doesn't get generated one day. Here's what's most likely to come up, and exactly what to do.</p>
 
     <div class="issue">
-      <h3>"Permission denied" when running <code class="inline">./install.sh</code> (or any <code class="inline">./</code> command)</h3>
-      <p>This means the file isn't marked as "runnable" yet. Fix it once with:</p>
+      <h3>Nothing happens after pasting the install command, or it says <code class="inline">command not found</code></h3>
+      <p>Make sure you pasted the <strong>whole</strong> line from Step 2, including <code class="inline">bash</code> at the start and the parentheses around <code class="inline">curl</code>. A common mistake is copying only part of it (e.g. just the <code class="inline">curl ...</code> portion), which downloads the script but never runs it.</p>
+    </div>
+
+    <div class="issue">
+      <h3>I pasted a <code class="inline">curl ... | bash</code> version instead (no parentheses), and key entry acted strange</h3>
+      <p>This is a real gotcha worth knowing about, not a typo on your part: piping straight into <code class="inline">bash</code> like <code class="inline">curl ... | bash</code> — as many install guides for other tools show — makes the key prompts silently misbehave. Instead of reading what you type, they can end up reading fragments of the installer's own code, so a correctly-typed key gets rejected for no visible reason, or Terminal seems to skip a step.</p>
+      <p>The command in Step 2 avoids this on purpose by using <code class="inline">bash &lt;(curl ...)</code> (note the parentheses) instead of a plain pipe. If you typed or pasted a different version from somewhere else, close Terminal, reopen it, and paste the exact command from Step 2.</p>
+    </div>
+
+    <div class="issue">
+      <h3>"Permission denied" when running <code class="inline">./configure.sh</code> or <code class="inline">./uninstall.sh</code></h3>
+      <p>The one-line install command in Step 2 already makes these runnable for you, so this only comes up if you're running one of them by hand in a copy of the project that didn't go through that command. Fix it once with:</p>
       <div class="term">
         <div class="term-bar"><span></span><span></span><span></span></div>
         <div class="term-body">
@@ -610,7 +621,7 @@
           <ul>
             <li><em>"timeout" or "connection"</em> → the internet was briefly down. Safe to ignore — it'll succeed next run, or generate one manually (see 1).</li>
             <li><em>"401" or "authentication" near "anthropic"</em> → your Anthropic key expired or billing lapsed. Fix it at console.anthropic.com, then generate a brief manually to confirm.</li>
-            <li><em>"Missing required API key(s)"</em> → your saved keys file is missing or got moved. Run <code class="inline">./install.sh</code> again to re-enter them.</li>
+            <li><em>"Missing required API key(s)"</em> → your saved keys file is missing or got moved. Paste the one-line install command from Step 2 again to re-enter them.</li>
           </ul>
         </li>
         <li><strong>Check iCloud Drive is turned on:</strong> <strong>System Settings → your name at the top → iCloud → iCloud Drive.</strong> Without it, briefs still generate and save on this Mac, they just won't sync to your phone or other devices.</li>
