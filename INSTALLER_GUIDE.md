@@ -1,9 +1,9 @@
 # The Installer, Explained in Plain Language
 
-This file explains what `install.sh`, `configure.sh`, and `uninstall.sh`
-actually do, step by step, and defines every technical term along the
-way. It's written for someone setting this project up for the first
-time who isn't necessarily a programmer.
+This file explains what `bootstrap.sh`, `install.sh`, `configure.sh`,
+and `uninstall.sh` actually do, step by step, and defines every
+technical term along the way. It's written for someone setting this
+project up for the first time who isn't necessarily a programmer.
 
 ## The big picture
 
@@ -11,13 +11,25 @@ This project checks crypto prices and news once a day, has Claude write
 a short research brief about it, and saves that brief somewhere you can
 read it. To do that *automatically, every day, without you running a
 command yourself*, a few things need to be set up on your computer once.
-That one-time setup is what `install.sh` does.
 
-Three scripts, three jobs:
+For a first-time install, all you actually run is one line in Terminal:
+
+```
+curl -fsSL https://raw.githubusercontent.com/grayson-max/crypto-research-assistant/main/bootstrap.sh | bash
+```
+
+That downloads and runs `bootstrap.sh`, which asks for your two API keys
+up front (checking each one works before anything else happens), then
+downloads the project and hands off to `install.sh` to finish the rest.
+You never need to manually download a zip file or `cd` into a folder
+first — see `READ_ME_instructions.html` for the full walkthrough.
+
+Four scripts, four jobs:
 
 | Script | When you run it | What it does |
 |---|---|---|
-| `install.sh` | Once, right after you first download the project | Sets everything up from scratch |
+| `bootstrap.sh` | Once, via the one-line command above | Collects & validates API keys, downloads the project, then runs `install.sh` |
+| `install.sh` | Automatically, at the end of `bootstrap.sh` (or on its own, if re-running later) | Sets up the Python environment, dependencies, and daily schedule |
 | `configure.sh` | Any time later | Changes your schedule or where briefs get delivered |
 | `uninstall.sh` | If you ever want to stop | Removes the automatic daily run, asks before deleting anything else |
 
@@ -49,19 +61,27 @@ installs them into the `.venv` toolbox from step 2.
 
 ### Step 4: Your preferences (`config.json`)
 
-You'll be asked three things:
-- Which coins to track (defaults to Bitcoin, Ethereum, Solana)
-- What time of day the brief should generate (default 8:00 AM)
-- What folder name to use for delivery (default `CryptoBriefs`)
+When installed via the one-line `bootstrap.sh` command, this step is
+silent: it copies `config.example.json` straight to `config.json`,
+which tracks Bitcoin, Ethereum, and Solana, generates at 8:00 AM, and
+delivers to an iCloud Drive folder named `CryptoBriefs`. Nothing is
+asked here — that's what keeps the install down to one command. Change
+any of it afterward by running `./configure.sh` (see below).
 
-Your answers get saved into a file called `config.json`. This file is
-**not** shared if you ever share this project's code with someone else
-(e.g. by putting it on GitHub) — each person who installs their own copy
-gets their own `config.json` with their own choices. (The technical term
-for "don't share this file" is that it's **git-ignored** — see
-`.gitignore`.)
+Your `config.json` is **not** shared if you ever share this project's
+code with someone else (e.g. by putting it on GitHub) — each person who
+installs their own copy gets their own `config.json` with their own
+choices. (The technical term for "don't share this file" is that it's
+**git-ignored** — see `.gitignore`.)
 
 ### Step 5: API keys (`.env`)
+
+This step is handled by `bootstrap.sh`, before `install.sh` even runs
+— it's the very first thing that happens, so a bad key is caught before
+anything else is downloaded or installed. `install.sh` sees the `.env`
+file `bootstrap.sh` already created and skips this step entirely; it
+only prompts for keys itself if you ever run `install.sh` directly in a
+folder that has no `.env` yet.
 
 An **API** (Application Programming Interface) is how one program asks
 another program for data over the internet — in this case, asking

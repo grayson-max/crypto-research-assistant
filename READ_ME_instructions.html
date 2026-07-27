@@ -318,29 +318,15 @@
     <div class="step">
       <div class="step-num">1</div>
       <div class="step-body">
-        <h3>Open Terminal</h3>
-        <p>Terminal is an app already on your Mac — it lets you type commands instead of clicking things.</p>
-        <ol>
-          <li>Press <kbd>⌘ Command</kbd> + <kbd>Space</kbd> at the same time. A search box pops up.</li>
-          <li>Type <code class="inline">Terminal</code></li>
-          <li>Press <kbd>Enter</kbd></li>
-        </ol>
-        <p>A plain window will open, showing some text ending in a <code class="inline">$</code>. That's where you'll type everything below.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
         <h3>Get two accounts set up</h3>
-        <p>Before installing anything, you need two "keys" — think of a key as a password that lets this tool fetch data on your behalf.</p>
+        <p>Before installing anything, you need two "keys" — think of a key as a password that lets this tool fetch data on your behalf. Have both ready before Step 2, since you'll be asked to paste them in almost immediately.</p>
         <p><strong>Key 1 — Anthropic</strong> (this is what writes the brief itself)</p>
         <ol>
           <li>Go to <code class="inline">console.anthropic.com</code> and sign up.</li>
           <li>You'll need to add a card.
             <div class="callout"><strong>Cost:</strong> pay-as-you-go, but one short brief a day typically runs a few cents a month.</div>
           </li>
-          <li>Find <strong>"API Keys"</strong> in the left-hand menu, click <strong>"Create Key"</strong>, and copy the long string it gives you. Paste it somewhere temporary (like Notes) — you'll need it again in Step 4.</li>
+          <li>Find <strong>"API Keys"</strong> in the left-hand menu, click <strong>"Create Key"</strong>, and copy the long string it gives you. Paste it somewhere temporary (like Notes) — you'll need it again in Step 2.</li>
         </ol>
         <p><strong>Key 2 — NewsAPI</strong> (finds headlines — free)</p>
         <ol>
@@ -351,43 +337,25 @@
     </div>
 
     <div class="step">
-      <div class="step-num">3</div>
+      <div class="step-num">2</div>
       <div class="step-body">
-        <h3>Get the project onto your computer</h3>
-        <p>You should have received a file called <code class="inline">crypto_research_assistant.zip</code> (by AirDrop, email, or a file-sharing link).</p>
+        <h3>Open Terminal and paste one command</h3>
+        <p>Terminal is an app already on your Mac — it lets you type commands instead of clicking things.</p>
         <ol>
-          <li>Find it in your <strong>Downloads</strong> folder and double-click it — it unzips into a regular folder named <code class="inline">crypto_research_assistant</code>.</li>
-          <li>Move that folder somewhere you'll remember — your <strong>Home</strong> folder (the one with the little house icon in Finder) is a good default.
-            <p>Don't see a Home folder in Finder's sidebar? That's normal — many Macs don't show it by default. Press <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>H</kbd> to jump straight to it, or click <strong>Finder → Settings → Sidebar</strong> and check the box next to your username to pin it there permanently.</p>
-            <div class="callout"><strong>Don't put it inside Desktop, Documents, or Downloads.</strong> macOS blocks background scheduling from touching files in those three folders unless you separately grant access in System Settings, so the daily automatic brief would silently stop working with no error message telling you why. Your Home folder itself, or any other regular folder, is fine.</div>
-          </li>
-          <li>Back in Terminal, move into that folder by typing:</li>
+          <li>Press <kbd>⌘ Command</kbd> + <kbd>Space</kbd> at the same time. A search box pops up.</li>
+          <li>Type <code class="inline">Terminal</code>, then press <kbd>Enter</kbd>.</li>
+          <li>A plain window opens, showing some text ending in a <code class="inline">$</code>. Paste the whole line below (<kbd>⌘</kbd> + <kbd>V</kbd>) and press <kbd>Enter</kbd>:</li>
         </ol>
         <div class="term">
           <div class="term-bar"><span></span><span></span><span></span></div>
           <div class="term-body">
-            <div class="term-line"><span class="prompt">$ </span>cd crypto_research_assistant</div>
+            <div class="term-line"><span class="prompt">$ </span>curl -fsSL https://raw.githubusercontent.com/grayson-max/crypto-research-assistant/main/bootstrap.sh | bash</div>
           </div>
         </div>
-        <p>If Terminal says <em>"No such file or directory,"</em> the folder likely landed somewhere else — type <code class="inline">cd </code> (with a trailing space, no Enter yet), then drag the folder from Finder into the Terminal window, which fills in the correct path for you.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <h3>Run the installer</h3>
-        <p>In Terminal, run it by typing:</p>
-        <div class="term">
-          <div class="term-bar"><span></span><span></span><span></span></div>
-          <div class="term-body">
-            <div class="term-line"><span class="prompt">$ </span>./install.sh</div>
-          </div>
-        </div>
+        <p>That's the only command you need to type. Everything else happens automatically:</p>
         <ol>
-          <li>It'll ask a series of questions, one at a time. Type your answer and press <kbd>Enter</kbd> — or if you see something in <code class="inline">[brackets]</code>, pressing <kbd>Enter</kbd> alone uses that as the default.</li>
-          <li>When asked for your Anthropic or NewsAPI key, paste the one you saved in Step 2 (<kbd>⌘</kbd> + <kbd>V</kbd>) and press <kbd>Enter</kbd>.</li>
-          <li>It checks that both keys actually work. If one fails, it'll say clearly which — usually a typo. Run <code class="inline">./install.sh</code> again to retry.</li>
+          <li>It asks for your Anthropic key first, then your NewsAPI key — paste each one (<kbd>⌘</kbd> + <kbd>V</kbd>) and press <kbd>Enter</kbd>. It checks each key works <em>before</em> installing anything else, so a typo is caught immediately instead of after everything else is already set up. If a key fails, it says so clearly and asks again — no need to start over.</li>
+          <li>Once both keys check out, it downloads the project to your Home folder, sets up everything it needs, and schedules the daily 8:00 AM run (using sensible defaults you can change any time — see Step 2 under "Changing your settings" below).</li>
           <li>When you see <code class="inline">=== Setup complete ===</code>, you're done.</li>
         </ol>
       </div>
@@ -624,12 +592,13 @@
     </div>
 
     <div class="issue">
-      <h3>During install, it says a key "failed to validate"</h3>
+      <h3>It says a key "didn't work" and asks me to paste it again</h3>
+      <p>That's expected — it just re-asks instead of stopping, so you don't have to start the whole command over. Common causes:</p>
       <ul>
-        <li><strong>Anthropic key failed:</strong> usually a copy/paste typo (go back to console.anthropic.com and copy it again, carefully — no extra spaces), or a payment method hasn't been added yet on that site — the key won't work until billing is set up, even though the actual cost is small.</li>
-        <li><strong>NewsAPI key failed:</strong> almost always a typo — go back to your NewsAPI account page and copy it again.</li>
+        <li><strong>Anthropic key:</strong> usually a copy/paste typo (go back to console.anthropic.com and copy it again, carefully — no extra spaces), or a payment method hasn't been added yet on that site — the key won't work until billing is set up, even though the actual cost is small.</li>
+        <li><strong>NewsAPI key:</strong> almost always a typo — go back to your NewsAPI account page and copy it again.</li>
       </ul>
-      <p>After fixing it, run <code class="inline">./install.sh</code> again — it's safe to re-run and won't duplicate anything already set up.</p>
+      <p>If you close Terminal and want to re-enter keys later, paste the one-line install command from Step 2 again — it detects the existing install and only re-asks for what's missing.</p>
     </div>
 
     <div class="issue">
