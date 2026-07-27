@@ -15,8 +15,13 @@ command yourself*, a few things need to be set up on your computer once.
 For a first-time install, all you actually run is one line in Terminal:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/grayson-max/crypto-research-assistant/main/bootstrap.sh | bash
+bash <(curl -fsSL https://raw.githubusercontent.com/grayson-max/crypto-research-assistant/main/bootstrap.sh)
 ```
+
+(Not the more common `curl ... | bash` form — piping directly into `bash`
+makes it read the script from the same input stream as the interactive
+key prompts inside it, which corrupts those prompts. The `bash <(curl
+...)` form avoids that by running the downloaded script as its own file.)
 
 That downloads and runs `bootstrap.sh`, which asks for your two API keys
 up front (checking each one works before anything else happens), then

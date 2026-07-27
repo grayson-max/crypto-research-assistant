@@ -161,6 +161,12 @@ chmod +x run_if_missing.sh
 # other's agent — a shared fixed label previously meant the second
 # install run would silently repoint the first one's catch-up watchdog.
 PLIST_LABEL="com.cryptoresearch.catchup.$(printf '%s' "$PROJECT_DIR" | shasum -a 256 | cut -c1-12)"
+
+# Not every Mac account has this folder yet — it's normally created the
+# first time some app installs a LaunchAgent, which may never have
+# happened on a brand-new account. Without this, writing the plist below
+# fails with "No such file or directory" on a genuinely clean machine.
+mkdir -p "$HOME/Library/LaunchAgents"
 PLIST_PATH="$HOME/Library/LaunchAgents/$PLIST_LABEL.plist"
 
 # One-time migration: remove the old shared-name agent from before this

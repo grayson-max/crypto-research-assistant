@@ -2,7 +2,15 @@
 # One-line installer for the Crypto Research Brief pipeline.
 #
 # Paste this whole line into Terminal:
-#   curl -fsSL https://raw.githubusercontent.com/grayson-max/crypto-research-assistant/main/bootstrap.sh | bash
+#   bash <(curl -fsSL https://raw.githubusercontent.com/grayson-max/crypto-research-assistant/main/bootstrap.sh)
+#
+# (Deliberately not `curl ... | bash` — piping straight into bash makes
+# bash read the script from the same stdin stream it uses for the
+# interactive `read` prompts below, which corrupts them: `read` ends up
+# consuming the next lines of THIS SCRIPT's own source as if they were
+# typed input, instead of getting what you actually type. Process
+# substitution — `bash <(curl ...)` — runs the downloaded script as its
+# own file, leaving stdin free for real keyboard input.)
 #
 # What this does, in order:
 #   1. Asks for your two API keys and checks each one works, before
