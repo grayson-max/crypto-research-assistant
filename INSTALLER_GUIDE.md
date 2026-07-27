@@ -43,8 +43,11 @@ Four scripts, four jobs:
 A script is just a text file full of commands, meant to be run all at
 once instead of typed one at a time. `install.sh` is a **shell
 script** — a script written in the language your Mac's Terminal
-understands directly. You run it by typing `./install.sh` in Terminal,
-from inside the project folder.
+understands directly. For a first-time setup you don't type
+`./install.sh` yourself — `bootstrap.sh` runs it for you automatically
+once your keys are confirmed. You'd only type `./install.sh` directly
+if you were re-running just this step on its own, from inside the
+project folder.
 
 ## Running `install.sh` — step by step
 
@@ -169,7 +172,8 @@ saved briefs. Changing which coins are tracked isn't a guided prompt yet
 Run `./uninstall.sh` any time you want to stop.
 
 **It always does two things first, no questions asked**, because these
-are 100% safe to reverse (you'd just run `install.sh` again):
+are 100% safe to reverse (you'd just paste the one-line install command
+from the top of this guide again):
 1. Removes the cron alarm from Step 6
 2. Removes the launchd catch-up check from Step 7
 
@@ -178,7 +182,8 @@ After that, daily automatic generation is fully stopped.
 **Then it asks you, one at a time, before touching anything else** —
 because these hold things you might want to keep:
 - Delete the `.venv` toolbox? (safe to say yes — easily rebuilt by
-  running `install.sh` again)
+  pasting the one-line install command again; it detects the existing
+  project folder and only redoes what's missing)
 - Delete your API keys and preferences (`.env`, `config.json`)? (say no
   if you might reinstall later and don't want to re-enter your keys)
 - Delete your saved briefs (`reports/`)? (say no if you want to keep the
