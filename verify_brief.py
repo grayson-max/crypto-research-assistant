@@ -28,7 +28,20 @@ KNOWN_TERMS = {
     "L1", "L2", "layer1", "layer2", "ath", "atl", "bullish", "bearish",
     "api", "tokenized", "tokenization", "memecoin", "memecoins", "intraday",
     "timeframes", "timeframe", "drawdown", "drawdowns",
-    "app", "malware", "permissioned",
+    "app", "malware", "permissioned", "rollout", "rollouts",
+    "validator", "validators",
+}
+
+# Words the AI sometimes runs together into one incorrect compound when
+# standard English keeps them separate — unlike KNOWN_TERMS above (which
+# whitelists words that are actually correct as written), these ARE
+# genuine mistakes, so they're corrected directly in the delivered text
+# rather than just flagged. Add a new entry here if the same kind of
+# mistake recurs with a different word (see CLAUDE.md's guidance on
+# distinguishing a real recurring pattern from a one-off typo).
+COMPOUND_WORD_FIXES = {
+    "datapoint": "data point",
+    "datapoints": "data points",
 }
 
 
@@ -169,13 +182,32 @@ def verify_spelling(brief_text: str) -> list[str]:
     return [f'Possible misspelling: "{word}"' for word in sorted(misspelled)]
 
 
+def fix_compound_words(text: str) -> str:
+    """Replace each COMPOUND_WORD_FIXES match with its corrected spacing,
+    preserving capitalization (so a sentence-initial "Datapoint" becomes
+    "Data point", not "data point")."""
+    pattern = re.compile(
+        r"\b(" + "|".join(re.escape(word) for word in COMPOUND_WORD_FIXES) + r")\b",
+        re.IGNORECASE,
+    )
+
+    def _replace(match: re.Match) -> str:
+        original = match.group(0)
+        fixed = COMPOUND_WORD_FIXES[original.lower()]
+        return fixed[0].upper() + fixed[1:] if original[0].isupper() else fixed
+
+    return pattern.sub(_replace, text)
+
+
 def verify_brief(
     brief_text: str, market_data: dict, dominance: dict, fear_greed: dict, headlines: list[dict]
 ) -> tuple[str, list[str]]:
     """Run all verification checks. Returns (annotated_brief_text, issues) —
-    the brief with "Source: ..." citations inserted under any headline-
-    sourced figures, and the list of remaining issues (unverifiable numbers
-    plus possible misspellings) to surface in a warning section."""
+    the brief with known compound-word mistakes corrected, "Source: ..."
+    citations inserted under any headline-sourced figures, and the list of
+    remaining issues (unverifiable numbers plus possible misspellings) to
+    surface in a warning section."""
+    brief_text = fix_compound_words(brief_text)
     annotated, unverified_numbers = annotate_and_verify_numbers(
         brief_text, market_data, dominance, fear_greed, headlines
     )

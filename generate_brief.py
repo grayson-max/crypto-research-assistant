@@ -38,6 +38,9 @@ SYSTEM_PROMPT = (
     "- Use terse data-label format for stats, not full sentences — e.g. "
     "'Market cap: $1.30T (#1 rank)' and 'Volume (24h): $24.5B', not "
     "'Market cap of $1.30T holds the #1 rank.'\n"
+    "- Use standard English word spacing — write 'data point' (two words), "
+    "not 'datapoint'. When unsure whether a compound term is conventionally "
+    "written as one word or two, default to two.\n"
 )
 
 
