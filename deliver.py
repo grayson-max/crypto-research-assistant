@@ -1,6 +1,7 @@
-"""Deliver a finished brief to iCloud Drive so it syncs to the user's phone,
-and fire a native macOS notification. No credentials required — relies on
-iCloud Drive already being signed in on the Mac running the pipeline.
+"""Deliver a finished brief to iCloud Drive so it syncs to the user's phone
+(or a local fallback folder inside the project if iCloud Drive isn't
+actually set up on this Mac — see ICLOUD_AVAILABLE below), and fire a
+native macOS notification. No credentials required either way.
 
 Builds a styled HTML report: a KPI row of per-coin stat tiles (price,
 24h/7d/30d change, market cap + dominance, volume, supply, distance from

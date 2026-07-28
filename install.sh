@@ -64,7 +64,13 @@ else
     fi
     read -rp "What time should the daily brief run? [08:00]: " SCHEDULE_TIME
     SCHEDULE_TIME="${SCHEDULE_TIME:-08:00}"
-    read -rp "iCloud Drive folder name for delivered briefs? [CryptoBriefs]: " FOLDER_NAME
+    if [ -d "$HOME/Library/Mobile Documents/com~apple~CloudDocs" ]; then
+        read -rp "iCloud Drive folder name for delivered briefs? [CryptoBriefs]: " FOLDER_NAME
+    else
+        echo "(iCloud Drive doesn't look set up on this Mac — briefs will be saved"
+        echo "to a folder of this name inside the project instead.)"
+        read -rp "Folder name for delivered briefs? [CryptoBriefs]: " FOLDER_NAME
+    fi
     FOLDER_NAME="${FOLDER_NAME:-CryptoBriefs}"
 
     .venv/bin/python3 - "$SCHEDULE_TIME" "$FOLDER_NAME" <<'PYEOF'

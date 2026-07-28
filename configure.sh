@@ -20,14 +20,21 @@ fi
 
 echo "=== Crypto Research Brief — Configure ==="
 echo ""
-.venv/bin/python3 <<'PYEOF'
+if [ -d "$HOME/Library/Mobile Documents/com~apple~CloudDocs" ]; then
+    DELIVERY_LABEL="iCloud Drive"
+else
+    DELIVERY_LABEL="local — iCloud Drive isn't set up on this Mac"
+fi
+.venv/bin/python3 - "$DELIVERY_LABEL" <<'PYEOF'
+import sys
 from config import load_config
 
+delivery_label = sys.argv[1]
 c = load_config()
 print("Current settings:")
 print(f"  Coins tracked: {', '.join(c['coins'].keys())}")
 print(f"  Schedule time: {c['schedule_time']}")
-print(f"  Delivery folder (iCloud Drive): {c['delivery']['folder_name']}")
+print(f"  Delivery folder ({delivery_label}): {c['delivery']['folder_name']}")
 PYEOF
 echo ""
 

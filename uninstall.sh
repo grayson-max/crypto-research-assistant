@@ -13,6 +13,18 @@ set -e
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$PROJECT_DIR"
 
+# Delivered briefs live either in iCloud Drive (untouched by this script,
+# on purpose — it's outside the project folder) or, if iCloud Drive isn't
+# set up on this Mac, in a same-named folder *inside* the project itself
+# (see deliver.py's LOCAL_FALLBACK_DIR). Read the folder name up front,
+# using plain python3 rather than .venv/bin/python3, since .venv might get
+# deleted by the prompt below before we get here.
+DELIVERY_FOLDER=$(python3 -c "
+import json, os
+path = 'config.json' if os.path.exists('config.json') else 'config.example.json'
+print(json.load(open(path))['delivery']['folder_name'])
+" 2>/dev/null || true)
+
 echo "=== Crypto Research Brief — Uninstall ==="
 echo "Project folder: $PROJECT_DIR"
 echo ""
@@ -71,10 +83,23 @@ if [[ "$DELETE_SECRETS" =~ ^[Yy] ]]; then
     echo "  Removed .env and config.json"
 fi
 
-read -rp "Delete your archived briefs (reports/)? [y/N]: " DELETE_REPORTS
+LOCAL_DELIVERY_DIR=""
+if [ -n "$DELIVERY_FOLDER" ] && [ -d "$PROJECT_DIR/$DELIVERY_FOLDER" ]; then
+    LOCAL_DELIVERY_DIR="$PROJECT_DIR/$DELIVERY_FOLDER"
+fi
+
+if [ -n "$LOCAL_DELIVERY_DIR" ]; then
+    read -rp "Delete your archived briefs (reports/ and $DELIVERY_FOLDER/)? [y/N]: " DELETE_REPORTS
+else
+    read -rp "Delete your archived briefs (reports/)? [y/N]: " DELETE_REPORTS
+fi
 if [[ "$DELETE_REPORTS" =~ ^[Yy] ]]; then
     rm -rf reports
     echo "  Removed reports/"
+    if [ -n "$LOCAL_DELIVERY_DIR" ]; then
+        rm -rf "$LOCAL_DELIVERY_DIR"
+        echo "  Removed $DELIVERY_FOLDER/ (local delivery folder)"
+    fi
 fi
 
 echo ""
