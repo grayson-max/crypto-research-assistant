@@ -15,9 +15,12 @@ investment advice, and is never shown directly to clients.
   and delivery destination. Check this before assuming BTC/ETH/SOL if a
   question is about "which coins does this track."
 - Briefs are also delivered as styled HTML to iCloud Drive (folder name
-  set in `config.json` under `delivery.folder_name`), but the Markdown
-  files in `reports/` are the canonical, plain-text source for reading or
-  summarizing brief content.
+  set in `config.json` under `delivery.folder_name`) if iCloud Drive is
+  set up on the Mac, or to a same-named folder inside the project itself
+  (`deliver.py`'s `LOCAL_FALLBACK_DIR`) if it isn't — `main.py`'s printed
+  output says which one happened on the most recent run. Either way, the
+  Markdown files in `reports/` are the canonical, plain-text source for
+  reading or summarizing brief content.
 
 ## Answering questions about brief content
 

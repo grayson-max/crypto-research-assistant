@@ -1,8 +1,10 @@
 """Orchestrate the pipeline: fetch market data + headlines, tag sentiment,
 generate a brief, save it to reports/brief_YYYY-MM-DD.md, and deliver a
-styled copy to iCloud Drive (syncs to phone) with a desktop notification."""
+styled copy to iCloud Drive if available (syncs to phone), or a local
+fallback folder otherwise, with a desktop notification."""
 
 import os
+import subprocess
 import sys
 import traceback
 from datetime import date
@@ -72,14 +74,34 @@ def run() -> None:
     out_path.write_text(f"{brief}\n\n_{SOURCES_NOTE}_\n")
     print(f"Saved brief to {out_path}")
 
-    icloud_path = deliver_to_icloud(
+    html_path, synced_to_icloud = deliver_to_icloud(
         brief, stem, market_data, dominance, fear_greed,
         today.strftime("%A, %B %-d, %Y"), SOURCES_NOTE,
     )
-    print(f"Delivered to {icloud_path}")
+
+    if synced_to_icloud:
+        print(f"Delivered to iCloud Drive: {html_path}")
+    else:
+        print(
+            f"iCloud Drive isn't set up on this Mac, so the brief was saved "
+            f"locally instead (still findable, just won't sync to your "
+            f"phone/other devices):\n  {html_path}\n"
+            f"Turn on iCloud Drive in System Settings to have future "
+            f"briefs sync automatically."
+        )
+
+    # When run by hand in Terminal (stdout is a real tty), pop the folder
+    # open in Finder — this is the "correctly directs the user to where the
+    # HTML version is" fix: don't just print a path and hope it's read
+    # correctly, actually show it. Skip this for cron/launchd's unattended
+    # runs, which redirect stdout to cron.log and would otherwise pop a
+    # Finder window open on its own every single morning.
+    if sys.stdout.isatty():
+        subprocess.run(["open", str(html_path.parent)], check=False)
 
     suffix = f" ({len(issues)} verification issue(s) flagged)" if issues else ""
-    notify_done(f"Synced to iCloud Drive: {icloud_path.name}{suffix}")
+    location = "iCloud Drive" if synced_to_icloud else "local folder (see Terminal)"
+    notify_done(f"Saved to {location}: {html_path.name}{suffix}")
 
 
 def main() -> None:

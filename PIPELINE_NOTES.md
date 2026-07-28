@@ -91,7 +91,26 @@ full styled HTML report and saves it into
 folder that iCloud Drive automatically syncs to all of the user's Apple
 devices. Chosen over email because it requires **zero account setup** for
 a new user (no app passwords, no SMTP config) as long as they're signed
-into iCloud on their Mac, which is the default for virtually all Mac users.
+into iCloud on their Mac.
+
+**Correction (found via a real second-user test):** "signed into iCloud"
+turned out not to be a safe assumption — a Mac that's never had iCloud
+Drive specifically turned on (separate from just being signed into an
+Apple ID) doesn't have the `com~apple~CloudDocs` container at all, but
+`Path.mkdir(parents=True)` created it anyway as an ordinary local folder.
+The brief was genuinely written to disk, but at a path invisible in
+Finder's iCloud Drive sidebar and buried under the hidden `~/Library`
+folder — the user found the internal `reports/*.md` file instead and
+assumed the HTML version never got created. `deliver_to_icloud` now
+checks whether `~/Library/Mobile Documents/com~apple~CloudDocs` actually
+exists before writing there, and falls back to a same-named folder
+inside the project itself (always somewhere the user already knows to
+look) if it doesn't. `main.py` prints which one happened, and opens the
+folder in Finder automatically when run by hand (`sys.stdout.isatty()`
+— skipped for cron/launchd's unattended runs). `scripts/copy_guide.sh`
+mirrors the same check so the setup guide always lands in the same
+folder as the brief itself, not split across two.
+
 Also fires the native macOS notification (best-effort — some environments,
 like screen-sharing/Focus modes, suppress it; this is a known non-fatal
 platform quirk, not a pipeline bug).

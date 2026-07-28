@@ -19,11 +19,24 @@ import markdown
 from config import load_config
 
 _config = load_config()
-ICLOUD_DIR = (
-    Path.home()
-    / "Library/Mobile Documents/com~apple~CloudDocs"
-    / _config["delivery"]["folder_name"]
-)
+
+# This is the container macOS creates once iCloud Drive has actually been
+# turned on for the signed-in Apple ID — NOT just "the folder is missing",
+# which Path.mkdir(parents=True) would happily create anyway as an ordinary
+# local directory. Without this check, a Mac that's never had iCloud Drive
+# enabled still gets a brief written to a path that's real on disk but
+# invisible in Finder's iCloud Drive sidebar, and ~/Library is hidden by
+# default — the user is told a location they have no practical way to find.
+_ICLOUD_ROOT = Path.home() / "Library/Mobile Documents/com~apple~CloudDocs"
+ICLOUD_AVAILABLE = _ICLOUD_ROOT.is_dir()
+
+ICLOUD_DIR = _ICLOUD_ROOT / _config["delivery"]["folder_name"]
+
+# Same folder name, but living inside the project itself (not Desktop/
+# Documents/Downloads — see install.sh's warning about those three being
+# TCC-restricted for background processes) so it's always somewhere the
+# user already knows to look, and cron/launchd can always write to it.
+LOCAL_FALLBACK_DIR = Path(__file__).parent / _config["delivery"]["folder_name"]
 
 COIN_NAMES = {symbol: data["name"] for symbol, data in _config["coins"].items()}
 
@@ -279,14 +292,20 @@ def deliver_to_icloud(
     fear_greed: dict,
     report_date: str,
     sources_note: str,
-) -> Path:
-    """Render the full styled report and save it into the iCloud Drive
-    folder, which syncs to any of the user's other Apple devices."""
-    ICLOUD_DIR.mkdir(parents=True, exist_ok=True)
+) -> tuple[Path, bool]:
+    """Render the full styled report and save it — to iCloud Drive if it's
+    actually set up on this Mac (syncs to the user's other Apple devices),
+    otherwise to a same-named folder inside the project itself, so the
+    brief always ends up somewhere real and findable either way.
+
+    Returns (path_written_to, synced_to_icloud) so the caller can tell the
+    user which one happened, instead of always claiming iCloud delivery."""
+    target_dir = ICLOUD_DIR if ICLOUD_AVAILABLE else LOCAL_FALLBACK_DIR
+    target_dir.mkdir(parents=True, exist_ok=True)
     html = render_html(brief_md, market_data, dominance, fear_greed, report_date, sources_note)
-    html_path = ICLOUD_DIR / f"{filename_stem}.html"
+    html_path = target_dir / f"{filename_stem}.html"
     html_path.write_text(html)
-    return html_path
+    return html_path, ICLOUD_AVAILABLE
 
 
 def notify_done(message: str) -> None:

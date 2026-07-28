@@ -58,5 +58,10 @@ chmod +x scripts/copy_guide.sh
 scripts/copy_guide.sh "$NEW_FOLDER"
 
 echo ""
-echo "Done. Briefs will now be delivered to iCloud Drive > $NEW_FOLDER at $NEW_TIME daily."
+if [ -d "$HOME/Library/Mobile Documents/com~apple~CloudDocs" ]; then
+    echo "Done. Briefs will now be delivered to iCloud Drive > $NEW_FOLDER at $NEW_TIME daily."
+else
+    echo "Done. iCloud Drive doesn't look set up on this Mac, so briefs will be"
+    echo "saved locally instead, in: $PROJECT_DIR/$NEW_FOLDER (at $NEW_TIME daily)."
+fi
 echo "(A copy of the setup/removal guide is saved there too.)"

@@ -411,10 +411,10 @@
       <ul>
         <li>Checks today's crypto prices and news</li>
         <li>Has Claude write a short brief about it</li>
-        <li>Saves a nicely formatted copy into your <strong>iCloud Drive</strong>, in a folder called <strong>CryptoBriefs</strong> (or whatever name you chose)</li>
+        <li>Saves a nicely formatted copy into your <strong>iCloud Drive</strong>, in a folder called <strong>CryptoBriefs</strong> (or whatever name you chose) — or, if iCloud Drive isn't set up on this Mac, into a folder of the same name inside the project folder instead. Either way, Terminal always tells you exactly which one happened and where to find it.</li>
       </ul>
       <p style="margin-top:12px">You don't need to keep Terminal open — it runs on its own, as long as your Mac isn't asleep or off.</p>
-      <p style="margin-top:12px">Want a brief right now instead of waiting? Run it by typing:</p>
+      <p style="margin-top:12px">Want a brief right now instead of waiting? Run it by typing this — Finder will automatically open to the folder your brief was just saved in:</p>
       <div class="term">
         <div class="term-bar">
             <div class="term-dots"><span></span><span></span><span></span></div>
@@ -695,13 +695,18 @@
             <li><em>"Missing required API key(s)"</em> → your saved keys file is missing or got moved. Paste the one-line install command from Step 2 again to re-enter them.</li>
           </ul>
         </li>
-        <li><strong>Check iCloud Drive is turned on:</strong> <strong>System Settings → your name at the top → iCloud → iCloud Drive.</strong> Without it, briefs still generate and save on this Mac, they just won't sync to your phone or other devices.</li>
+        <li><strong>Check the delivery folder inside the project itself.</strong> In Finder, open the <code class="inline">crypto_research_assistant</code> folder and look for a folder named the same as your delivery folder (<code class="inline">CryptoBriefs</code> by default). If it's there, the brief was generated fine — it's just that iCloud Drive isn't turned on, so it was saved locally instead of syncing anywhere. Generating one manually (see 1) will also tell you directly in Terminal which of the two happened.</li>
       </ol>
     </div>
 
     <div class="issue">
+      <h3>I found the brief as a .md file in the "reports" folder, not the styled version</h3>
+      <p><code class="inline">reports/brief_YYYY-MM-DD.md</code> is a plain-text working copy this project keeps for its own internal use (for example, so Claude Code can answer questions like "how did BTC do this week"). It's not the version meant for reading — that's the styled <code class="inline">.html</code> file, delivered to iCloud Drive (or the local fallback folder above if iCloud Drive isn't set up). If you're looking at the plain-text version, look one level up in the folder described just above instead.</p>
+    </div>
+
+    <div class="issue">
       <h3>It's generating briefs, but they're not showing up on my phone/other devices</h3>
-      <p>That's almost always the iCloud Drive check above — the brief is being created fine, it just isn't syncing anywhere else yet.</p>
+      <p>This means iCloud Drive isn't turned on for this Mac, so briefs are being saved to a local folder instead — see the entry above for exactly where. Turn on iCloud Drive (<strong>System Settings → your name at the top → iCloud → iCloud Drive</strong>) and future briefs will switch to delivering there automatically, syncing to your other devices. Past briefs already saved locally won't move on their own — copy them into iCloud Drive yourself if you want them to sync too.</p>
     </div>
 
     <div class="issue">
