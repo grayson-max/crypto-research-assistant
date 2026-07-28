@@ -117,6 +117,10 @@ STYLE = """
   .disclaimer { color: var(--muted); font-size: 0.7rem; font-style: italic; margin-top: 24px; }
   .sources-note { color: var(--muted); font-size: 0.65rem; margin-top: 4px; }
   .citation { color: var(--muted); font-size: 0.7rem; font-style: italic; }
+
+  .verification-notes { margin-top: 20px; font-size: 0.8rem; }
+  .verification-notes h2 { font-size: 1.05rem; }
+  .verification-notes ul { padding-left: 20px; }
 </style>
 """
 
@@ -264,6 +268,21 @@ def render_html(
         body_md = body_md[: disclaimer_match.start()]
         disclaimer_html = f'<p class="disclaimer">{disclaimer_match.group(1)}</p>'
 
+    # Pull out the "Verification Notes" warning section (main.py only adds
+    # this when verify_brief.py actually flagged something) so it renders
+    # smaller/more muted than the AI's own written analysis — it's an
+    # automated caveat, not part of the narrative itself.
+    notes_match = re.search(r"\n*## ⚠️ Verification Notes\n.*\Z", body_md, re.DOTALL)
+    notes_html = ""
+    if notes_match:
+        notes_md = body_md[notes_match.start():].strip()
+        body_md = body_md[: notes_match.start()]
+        notes_html = (
+            '<div class="verification-notes">'
+            f"{markdown.markdown(_ensure_blank_line_before_lists(notes_md))}"
+            "</div>"
+        )
+
     prose_html = markdown.markdown(_ensure_blank_line_before_lists(body_md))
 
     # verify_brief.py inserts headline-sourced citations as a plain italic
@@ -280,6 +299,7 @@ def render_html(
       {_fear_greed_gauge(fear_greed)}
 
       <div class="prose">{prose_html}</div>
+      {notes_html}
       {disclaimer_html}
       <p class="sources-note">{sources_note}</p>
     </body></html>"""
