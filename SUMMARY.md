@@ -14,7 +14,7 @@ custodians, and does not give investment advice directly to any client.
 
 | Source | Used for | Notes |
 |---|---|---|
-| [CoinGecko](https://www.coingecko.com/) `simple/price` API | Price, 24h % change, market cap for BTC/ETH/SOL | Free tier, no API key required |
+| [CoinGecko](https://www.coingecko.com/) `/coins/markets` API | Price, 24h/7d/30d % change, market cap + rank, volume, supply, ATH distance, 7-day sparkline for BTC/ETH/SOL | Free tier, no API key required |
 | [NewsAPI](https://newsapi.org/) `/v2/everything` | Recent headlines mentioning Bitcoin/Ethereum/Solana | Free tier (100 req/day); originally scoped for CryptoPanic, but CryptoPanic discontinued its free API tier in April 2026 — see Limitations |
 | [Anthropic API](https://www.anthropic.com/) (`claude-opus-4-8`) | Drafting the written brief from the structured data | Given market data + tagged headlines as input; does not have independent internet access or knowledge of prices beyond what it's given |
 
@@ -56,7 +56,9 @@ The system prompt instructs the model to:
 - Avoid the words "buy," "sell," and "should"
 - Avoid price predictions or targets
 - Describe what the data and headlines show, rather than recommend action
-- Write 2–3 short paragraphs plus a few bullet points per asset
+- Write in short bullet points throughout, not paragraphs — one fact per
+  bullet, terse data-label formatting for stats (e.g. "Market cap: $1.30T
+  (#1 rank)"), so the reader can scan line by line
 
 **The compliance disclaimer is not left to the model.** It is a fixed string
 appended to every generated brief in code, after the API call returns —
@@ -85,9 +87,14 @@ method.
   which reflects that day-to-day crypto reporting is often matter-of-fact
   rather than clearly loaded language — this is expected behavior, not a bug.
 - **No backtesting or accuracy validation.** The brief's accuracy depends
-  entirely on the quality of the two upstream data sources at request time;
-  there is no mechanism to verify the AI-drafted prose against the
-  underlying numbers beyond the compliance-language checks in the prompt.
+  entirely on the quality of the two upstream data sources at request
+  time. `verify_brief.py` does cross-check every `$`/`%` figure the AI
+  writes against the fetched market data (and, failing that, against the
+  day's headlines, inserting a source citation if it matches one) — this
+  catches wrong numbers, but not other kinds of AI-drafted prose
+  inaccuracy (e.g. a technically-true-but-misleading characterization),
+  which remains unverified beyond the compliance-language checks in the
+  prompt.
 - **Model instruction-following is a prompt constraint, not a hard
   guarantee.** The "no buy/sell/should" rule is enforced via the system
   prompt, not a code-level filter. Testing has consistently shown Claude
@@ -116,11 +123,6 @@ method.
 
 ## Sample Briefs
 
-Dated sample briefs, generated on different days to show varying
-market conditions, are saved in `reports/`:
-
-- `reports/brief_2026-07-17.md`
-- `reports/brief_2026-07-18.md`
-- `reports/brief_2026-07-19.md`
-- `reports/brief_2026-07-20.md`
-- `reports/brief_2026-07-21.md`
+Every day the pipeline has run produces a new dated file — see
+`reports/brief_YYYY-MM-DD.md` for the full history (one file per day,
+showing varying market conditions over time).
