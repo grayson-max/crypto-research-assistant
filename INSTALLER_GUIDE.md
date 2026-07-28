@@ -186,8 +186,11 @@ because these hold things you might want to keep:
   project folder and only redoes what's missing)
 - Delete your API keys and preferences (`.env`, `config.json`)? (say no
   if you might reinstall later and don't want to re-enter your keys)
-- Delete your saved briefs (`reports/`)? (say no if you want to keep the
-  history)
+- Delete your saved briefs (`reports/`, plus your delivery folder too if
+  it's the local one inside the project — only asked about if you
+  actually have one there, since the normal case delivers to iCloud
+  Drive instead, which this never touches)? (say no if you want to keep
+  the history)
 
 It never deletes the project folder itself, and never has a "delete
 everything, don't ask" shortcut — you're always in control of what

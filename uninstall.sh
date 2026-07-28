@@ -105,6 +105,6 @@ fi
 echo ""
 echo "=== Uninstall complete ==="
 echo "To remove the project folder entirely, delete it yourself:"
-echo "  rm -rf $PROJECT_DIR"
+echo "  rm -rf \"$PROJECT_DIR\""
 echo "(left as a manual step on purpose, since it also holds anything you"
 echo "chose to keep above)."

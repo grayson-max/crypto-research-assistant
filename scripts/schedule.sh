@@ -25,7 +25,13 @@ HOUR=$((10#$HOUR))
 MINUTE=$((10#$MINUTE))
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CRON_CMD="cd $PROJECT_DIR && $PROJECT_DIR/.venv/bin/python3 main.py >> $PROJECT_DIR/cron.log 2>&1"
+# Quoted, not just "$PROJECT_DIR" interpolated bare into the string — this
+# whole line becomes crontab text that cron later hands to /bin/sh -c, so
+# without quotes here a project path containing a space (e.g. a Mac
+# username like "John Smith") makes `cd` receive only the first word,
+# fail, and silently skip the rest of the command — no brief, no error
+# anywhere a user would think to look.
+CRON_CMD="cd \"$PROJECT_DIR\" && \"$PROJECT_DIR/.venv/bin/python3\" main.py >> \"$PROJECT_DIR/cron.log\" 2>&1"
 CRON_LINE="$MINUTE $HOUR * * * $CRON_CMD"
 
 # Remove any previous entry for this exact project folder first, so
