@@ -15,7 +15,7 @@ HEADLINES_PER_COIN = 5
 
 
 def fetch_headlines() -> list[dict]:
-    """Return a list of {coin, headline, source, published_at} dicts."""
+    """Return a list of {coin, headline, source, published_at, url} dicts."""
     api_key = os.getenv("NEWSAPI_API_KEY")
     # NewsAPI has no built-in coin tagging, so we search per-coin with terms
     # specific enough to avoid unrelated noise (plain "SOL" or "ETH" match
@@ -45,6 +45,7 @@ def fetch_headlines() -> list[dict]:
                     "headline": article.get("title"),
                     "source": (article.get("source") or {}).get("name"),
                     "published_at": article.get("publishedAt"),
+                    "url": article.get("url"),
                 }
             )
 

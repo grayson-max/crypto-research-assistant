@@ -107,6 +107,40 @@ def _figure_candidates(match: re.Match, is_percent: bool) -> tuple[list[float], 
     return [_parse_dollar(match.group(1), match.group(2))], tolerance
 
 
+CITATION_MARKER_RE = re.compile(r"\[(\d+)\]\s*$")
+
+
+def link_headline_citations(brief_text: str, headlines: list[dict]) -> str:
+    """Turn a trailing "[N]" marker the AI wrote on a bullet (per
+    generate_brief.py's prompt instructions) into a clickable "Source: ..."
+    line beneath it, using the Nth headline's publisher and URL. The marker
+    itself is always stripped from the visible bullet, even when N doesn't
+    correspond to a real headline, so a stray/invalid tag never leaks into
+    the delivered text."""
+    lines = brief_text.split("\n")
+
+    for i, line in enumerate(lines):
+        match = CITATION_MARKER_RE.search(line)
+        if not match:
+            continue
+
+        lines[i] = line[: match.start()].rstrip()
+        index = int(match.group(1)) - 1
+        if not (0 <= index < len(headlines)):
+            continue
+
+        item = headlines[index]
+        url = item.get("url")
+        source = item.get("source")
+        if not url or not source:
+            continue
+
+        indent = re.match(r"\s*", lines[i]).group(0)
+        lines[i] = f"{lines[i]}\n{indent}*Source: [{source}]({url})*"
+
+    return "\n".join(lines)
+
+
 def _headline_source(candidates: list[float], tolerance: float, headlines: list[dict]) -> str | None:
     """Return the source name of the first headline whose own text quotes a
     number matching one of `candidates` — i.e. this figure was pulled from
@@ -140,6 +174,11 @@ def annotate_and_verify_numbers(
     lines = brief_text.split("\n")
 
     for i, line in enumerate(lines):
+        if i + 1 < len(lines) and lines[i + 1].strip().startswith("*Source:"):
+            # Already sourced by link_headline_citations — don't re-flag or
+            # append a second citation beneath the same bullet.
+            continue
+
         matches = list(DOLLAR_RE.finditer(line)) + list(PERCENT_RE.finditer(line))
         sources = set()
 
@@ -208,10 +247,12 @@ def verify_brief(
     remaining issues (unverifiable numbers plus possible misspellings) to
     surface in a warning section."""
     brief_text = fix_compound_words(brief_text)
+    spelling_issues = verify_spelling(brief_text)
+    brief_text = link_headline_citations(brief_text, headlines)
     annotated, unverified_numbers = annotate_and_verify_numbers(
         brief_text, market_data, dominance, fear_greed, headlines
     )
-    return annotated, unverified_numbers + verify_spelling(brief_text)
+    return annotated, unverified_numbers + spelling_issues
 
 
 if __name__ == "__main__":

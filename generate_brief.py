@@ -41,6 +41,13 @@ SYSTEM_PROMPT = (
     "- Use standard English word spacing — write 'data point' (two words), "
     "not 'datapoint'. When unsure whether a compound term is conventionally "
     "written as one word or two, default to two.\n"
+    "- The headlines below are each preceded by a bracketed number, e.g. "
+    "'[3] [BTC] ...'. When a bullet in Notable Items is directly based on "
+    "one of these headlines, end that bullet with the same number in "
+    "brackets, after any trailing punctuation, e.g. 'Something happened. "
+    "[3]' — exactly one number per bullet. Do not add a bracketed number "
+    "to bullets that come purely from market data or the Fear & Greed "
+    "index, only ones based on a specific headline.\n"
 )
 
 
@@ -71,9 +78,9 @@ def build_prompt(market_data: dict, headlines: list[dict], fear_greed: dict) -> 
     )
 
     lines.append("\nRecent headlines with sentiment tags:")
-    for item in headlines:
+    for idx, item in enumerate(headlines, start=1):
         lines.append(
-            f"- [{item['coin']}] ({item['sentiment']}) {item['headline']} "
+            f"- [{idx}] [{item['coin']}] ({item['sentiment']}) {item['headline']} "
             f"— {item['source']}"
         )
 
