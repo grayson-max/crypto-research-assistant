@@ -30,8 +30,12 @@ echo "Project folder: $PROJECT_DIR"
 echo ""
 
 # --- 1. Remove the cron job ---
-if crontab -l 2>/dev/null | grep -qF "$PROJECT_DIR"; then
-    ( crontab -l 2>/dev/null | grep -vF "$PROJECT_DIR" ) | crontab -
+# Matched against `cd "$PROJECT_DIR"` (with the closing quote), not the
+# bare path — see scripts/schedule.sh's comment on why a bare substring
+# match would also strip a different project whose path starts with this
+# one (e.g. "crypto_research_assistant" vs "crypto_research_assistant_v2").
+if crontab -l 2>/dev/null | grep -qF "cd \"$PROJECT_DIR\""; then
+    ( crontab -l 2>/dev/null | grep -vF "cd \"$PROJECT_DIR\"" ) | crontab -
     echo "[1/2] Removed the daily cron job."
 else
     echo "[1/2] No cron job found for this project, skipping."

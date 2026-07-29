@@ -85,14 +85,23 @@ known crypto/finance terms.
 
 A figure that doesn't match the fetched market data isn't automatically
 treated as an error — it's first checked against that day's fetched
-headlines (`fetch_headlines.py`, which carries a `source` field per
-article). If it matches a number quoted in a headline, an inline
+headlines (`fetch_headlines.py`, which carries a `source` and `url` field
+per article). If it matches a number quoted in a headline, an inline
 `*Source: <publisher>*` citation is inserted right under that line in the
 brief (nested in the same bullet) instead of being flagged — it wasn't
 fetched by us, but it wasn't invented either. Only figures that match
 neither the market data nor any headline, plus any spelling flags, are
 appended as a visible "⚠️ Verification Notes" list at the bottom of that
 day's brief — delivery is never blocked, it's just a heads-up for review.
+
+Separately (and independently of that numeric cross-check),
+`generate_brief.py` numbers each headline in its prompt and asks the AI
+to tag any bullet directly based on one with that number, e.g.
+`Something happened. [3]`. `verify_brief.py`'s `link_headline_citations`
+turns that tag into a clickable `*Source: [<publisher>](<url>)*` link
+beneath the bullet — this covers any headline-derived bullet, not just
+ones with a `$`/`%` figure, and is about attribution/click-through, not
+hallucination-catching.
 
 If the user notices a flagged item (or any other spelling/data problem)
 in a specific day's brief and wants it handled going forward, they don't

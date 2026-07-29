@@ -94,7 +94,12 @@ method.
   catches wrong numbers, but not other kinds of AI-drafted prose
   inaccuracy (e.g. a technically-true-but-misleading characterization),
   which remains unverified beyond the compliance-language checks in the
-  prompt.
+  prompt. Separately, any bullet the AI tags as headline-based (see
+  `generate_brief.py`'s numbered-headline prompt) gets a clickable
+  `Source: [Publisher](url)` link inserted beneath it, regardless of
+  whether that bullet contains a `$`/`%` figure — this citation-linking
+  step is about attribution, not verification, so it runs independently
+  of the numeric cross-check above.
 - **Model instruction-following is a prompt constraint, not a hard
   guarantee.** The "no buy/sell/should" rule is enforced via the system
   prompt, not a code-level filter. Testing has consistently shown Claude

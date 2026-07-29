@@ -41,7 +41,7 @@ tail -30 ~/crypto_research_assistant/cron.log
 ## 3. Open it in the browser
 
 ```bash
-cd ~/crypto_research_assistant && source .venv/bin/activate && python3 view_brief.py
+cd ~/crypto_research_assistant && .venv/bin/python3 view_brief.py
 ```
 
 This renders today's brief as styled HTML and opens it in the default
