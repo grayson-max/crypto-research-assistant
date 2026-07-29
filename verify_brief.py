@@ -29,7 +29,7 @@ KNOWN_TERMS = {
     "api", "tokenized", "tokenization", "memecoin", "memecoins", "intraday",
     "timeframes", "timeframe", "drawdown", "drawdowns",
     "app", "malware", "permissioned", "rollout", "rollouts",
-    "validator", "validators",
+    "validator", "validators", "blockchain", "botnet",
 }
 
 # Words the AI sometimes runs together into one incorrect compound when
