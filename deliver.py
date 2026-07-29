@@ -117,7 +117,7 @@ STYLE = """
   .disclaimer { color: var(--muted); font-size: 0.7rem; font-style: italic; margin-top: 24px; }
   .sources-note { color: var(--muted); font-size: 0.65rem; margin-top: 4px; }
   .citation { color: var(--muted); font-size: 0.7rem; font-style: italic; }
-  .citation a { color: inherit; text-decoration: underline; }
+  .citation a { color: var(--accent); text-decoration: underline; }
 
   .verification-notes { margin-top: 20px; font-size: 0.8rem; }
   .verification-notes h2 { font-size: 1.05rem; }
